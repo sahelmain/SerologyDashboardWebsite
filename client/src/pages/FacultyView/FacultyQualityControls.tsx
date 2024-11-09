@@ -1,45 +1,50 @@
 import React, { useEffect } from "react";
-import DropDown from "../../components/DropDown";
 import NavBar from "../../components/NavBar";
+import { ButtonBase } from "@mui/material";
 import { testTypeLinkList } from "../../utils/utils";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
-
-// Map dropdown options with specific links for each test type
-const OC_options = testTypeLinkList.map(item => ({
-  name: item.name, 
-  link: item.link + "/order_controls"
-}));
-const RC_options = testTypeLinkList.map(item => ({
-  name: item.name, 
-  link: "admin-review_controls"
-}));
-
-// For the QC Builder, make sure "Serology" has the correct link
-const QB_options = testTypeLinkList.map(item => ({
-  name: item.name,
-  link: item.name === "Serology" ? "/faculty-qc-builder/serology" : item.link + "/qc_builder"
-}));
+import { useAuth, UserType } from "../../context/AuthContext";
 
 const FacultyQualityControls = () => {
   const navigate = useNavigate();
   const { checkSession, checkUserType } = useAuth();
 
   useEffect(() => {
-    // Redirect unauthorized users
-    if (!checkSession() || checkUserType() === 'Student') navigate("/unauthorized");
-  }, []);
+    const checkAuth = async () => {
+      try {
+        const sessionValid = await checkSession();
+        const userType = await checkUserType();
+        
+        if (!sessionValid || userType === UserType.Student) {
+          navigate("/unauthorized");
+        }
+      } catch (error) {
+        navigate("/unauthorized");
+      }
+    };
+    
+    checkAuth();
+  }, [checkSession, checkUserType, navigate]);
 
   return (
     <>
-      <NavBar name="Quality Control" />
-      <div
-        className="flex items-center justify-center gap-36"
-        style={{ minWidth: "100svw", minHeight: "90svh" }}
-      >
-        <DropDown name="Order Controls" options={OC_options} />
-        <DropDown name="Review Controls" options={RC_options} />
-        <DropDown name="QC Builder" options={QB_options} />
+      <NavBar name="Quality Controls" />
+      <div className="flex flex-col items-center" style={{ minHeight: "90svh" }}>
+        <div className="grid grid-cols-2 gap-8 mt-8">
+          <ButtonBase
+            onClick={() => navigate("/faculty/edit-qc/serology")}
+            className="rounded-lg w-80 h-36 bg-[#E9EBF5] border border-solid border-[#47669C] transition-all hover:bg-[#8faadc] hover:border-[#2F528F] hover:border-4 p-6"
+          >
+            <div className="font-bold text-2xl">QC Builder</div>
+          </ButtonBase>
+
+          <ButtonBase
+            onClick={() => navigate("/faculty/qc-review")}
+            className="rounded-lg w-80 h-36 bg-[#E9EBF5] border border-solid border-[#47669C] transition-all hover:bg-[#8faadc] hover:border-[#2F528F] hover:border-4 p-6"
+          >
+            <div className="font-bold text-2xl">Review Controls</div>
+          </ButtonBase>
+        </div>
       </div>
     </>
   );

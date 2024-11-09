@@ -1,76 +1,38 @@
-import React, { useState } from 'react';
+import React from 'react';
+import NavBar from "../../components/NavBar";
 import { useNavigate } from 'react-router-dom';
+import { useTheme } from '../../context/ThemeContext';
 
-const qcItems = ["Autoimmune", "CRP", "CH50", "hCG", "Hepatitis", "HIV", "Ig Tests", "Mono", "RPR"];
-
-const EditSerologyQC = () => {
-  const [selectedQC, setSelectedQC] = useState<string | null>(null);
+const EditSerologyQC: React.FC = () => {
   const navigate = useNavigate();
-
-  const handleSelectQC = (item: string) => {
-    setSelectedQC(item);
-  };
-
-  const handleEdit = () => {
-    if (selectedQC) {
-      // Navigate to the editing page or display editing modal
-      alert(`Editing QC File: ${selectedQC}`);
-    }
-  };
-
-  const handleDelete = () => {
-    if (selectedQC) {
-      const confirmDelete = window.confirm(`Are you sure you want to delete QC File: ${selectedQC}?`);
-      if (confirmDelete) {
-        // Implement deletion logic here
-        alert(`QC File ${selectedQC} has been deleted.`);
-        setSelectedQC(null); // Deselect after deletion
-      }
-    }
-  };
+  const { theme } = useTheme();
 
   return (
-    <div className="edit-serology-qc-container">
-      <div className="edit-serology-header">
-        <button className="back-button" onClick={() => navigate(-1)}>⬅</button>
-        <h2>Edit Serology QC</h2>
-        <div className="home-logout-icons">
-          <button className="home-icon" onClick={() => navigate('/admin-home')}>🏠</button>
-          <button className="logout-icon" onClick={() => navigate('/login')}>🔗</button>
-        </div>
-      </div>
-
-      <p className="instructions">1<sup>st</sup> – Select QC to Edit</p>
-      <div className="qc-grid">
-        {qcItems.map((item) => (
-          <button
-            key={item}
-            className={`qc-item ${selectedQC === item ? 'selected' : ''}`}
-            onClick={() => handleSelectQC(item)}
-          >
-            {item}
-          </button>
-        ))}
-      </div>
-
-      <div className="actions">
-        <button 
-          className={`edit-button ${selectedQC ? '' : 'disabled'}`} 
-          onClick={handleEdit} 
-          disabled={!selectedQC}
+    <>
+      <NavBar name="Serology QC Builder" />
+      <div
+        className="flex items-center justify-center gap-36"
+        style={{ minWidth: "100svw", minHeight: "90svh" }}
+      >
+        {/* Button for Serology QC Panels */}
+        <button
+          onClick={() => navigate('/faculty/serology-panels')}
+          className={`!rounded-lg sm:w-80 sm:h-36 !bg-[${theme.secondaryColor}] !border-[1px] !border-solid !border-[#47669C] transition ease-in-out hover:!bg-[#8faadc] hover:!border-[#2F528F] hover:!border-[4px] p-6`}
         >
-          Edit QC File
+          <div className="button-text font-bold text-2xl">Serology QC Panels</div>
         </button>
-        <button 
-          className={`delete-button ${selectedQC ? '' : 'disabled'}`} 
-          onClick={handleDelete} 
-          disabled={!selectedQC}
+
+        {/* Button for Create New Panel */}
+        <button
+          onClick={() => navigate('/faculty/create-panel')}
+          className={`!rounded-lg sm:w-80 sm:h-36 !bg-[${theme.secondaryColor}] !border-[1px] !border-solid !border-[#47669C] transition ease-in-out hover:!bg-[#8faadc] hover:!border-[#2F528F] hover:!border-[4px] p-6`}
         >
-          Delete QC File
+          <div className="button-text font-bold text-2xl">Create New Panel</div>
         </button>
       </div>
-    </div>
+    </>
   );
 };
 
 export default EditSerologyQC;
+

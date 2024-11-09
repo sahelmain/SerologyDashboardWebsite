@@ -1,0 +1,180 @@
+import React, { useState } from 'react';
+import NavBar from "../../components/NavBar";
+import { useNavigate } from 'react-router-dom';
+import { useTheme } from '../../context/ThemeContext';
+import { IoArrowBack, IoArrowForward } from 'react-icons/io5';
+import { FaHome } from 'react-icons/fa';
+
+interface CRPTiterData {
+  qcFileName: string;
+  qcLotNumber: string;
+  qcExpirationDate: string;
+  openDate: string;
+  closedDate: string;
+  reportType: 'qualitative' | 'leveyJennings';
+  analytes: {
+    name: string;
+    abbreviation: string;
+    expectedRange: string;
+    minLevel: string;
+    maxLevel: string;
+  }[];
+}
+
+const CRPTiter: React.FC = () => {
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState<CRPTiterData>({
+    qcFileName: 'CRP Titer',
+    qcLotNumber: '',
+    qcExpirationDate: '',
+    openDate: '',
+    closedDate: '',
+    reportType: 'qualitative',
+    analytes: [
+      { name: 'CRP Titer', abbreviation: 'CRP Titer', expectedRange: 'Positive', minLevel: '', maxLevel: '' }
+    ]
+  });
+
+  const handleSave = () => {
+    console.log('Saving QC File:', formData);
+    navigate('/faculty/edit-qc/crp');
+  };
+
+  const handleReportTypeChange = (type: 'qualitative' | 'leveyJennings') => {
+    setFormData(prev => ({
+      ...prev,
+      reportType: type
+    }));
+  };
+
+  return (
+    <div className="min-h-screen bg-slate-50">
+      <div className="bg-white shadow">
+        <div className="mx-auto px-4">
+          <div className="flex h-16 items-center gap-4">
+            <button onClick={() => navigate(-1)} className="p-2 hover:bg-slate-100 rounded-full">
+              <IoArrowBack size={20} />
+            </button>
+            <button onClick={() => navigate('/admin-home')} className="p-2 hover:bg-slate-100 rounded-full">
+              <FaHome size={20} />
+            </button>
+            <button onClick={() => navigate(1)} className="p-2 hover:bg-slate-100 rounded-full">
+              <IoArrowForward size={20} />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="container mx-auto px-4 py-8">
+        {/* Header Fields */}
+        <div className="grid grid-cols-5 gap-4 mb-8">
+          <div>
+            <div className="font-bold mb-2">QC File Name</div>
+            <input
+              type="text"
+              value={formData.qcFileName}
+              className="border border-blue-200 rounded p-2 bg-[#e3f2fd] w-full"
+              readOnly
+            />
+          </div>
+          {/* Other header fields */}
+          {/* ... */}
+        </div>
+
+        {/* Report Type Section */}
+        <div className="flex justify-end mb-8">
+          <div>
+            <div className="font-bold mb-2">Report Type</div>
+            <div className="flex gap-4">
+              <button
+                onClick={() => handleReportTypeChange('qualitative')}
+                className="border border-green-200 rounded w-6 h-6 bg-[#e8f5e9] flex items-center justify-center"
+              >
+                {formData.reportType === 'qualitative' && 'X'}
+              </button>
+              <button
+                onClick={() => handleReportTypeChange('leveyJennings')}
+                className="border border-green-200 rounded w-6 h-6 bg-[#e8f5e9] flex items-center justify-center"
+              >
+                {formData.reportType === 'leveyJennings' && 'X'}
+              </button>
+            </div>
+            <div className="flex gap-4 text-sm mt-1">
+              <span>Qualitative</span>
+              <span>Levey-Jennings</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Analytes Table */}
+        <div className="mb-8">
+          <div className="grid grid-cols-5 gap-4 mb-4">
+            <div className="font-bold">Analyte</div>
+            <div className="font-bold">Abbreviation</div>
+            <div className="font-bold">Expected Range</div>
+            <div className="font-bold">Min Level</div>
+            <div className="font-bold">Max Level</div>
+          </div>
+          {formData.analytes.map((analyte, index) => (
+            <div key={index} className="grid grid-cols-5 gap-4 mb-2">
+              <div className="border border-blue-200 rounded p-2 bg-[#e3f2fd]">
+                {analyte.name}
+              </div>
+              <div className="border border-blue-200 rounded p-2 bg-[#e3f2fd]">
+                {analyte.abbreviation}
+              </div>
+              <div className="border border-blue-200 rounded p-2 bg-[#e3f2fd]">
+                {analyte.expectedRange}
+              </div>
+              <input
+                type="text"
+                value={analyte.minLevel}
+                placeholder="e.g., 1:2"
+                className="border border-green-200 rounded p-2 bg-[#e8f5e9]"
+                onChange={(e) => {
+                  const newAnalytes = [...formData.analytes];
+                  newAnalytes[index].minLevel = e.target.value;
+                  setFormData({...formData, analytes: newAnalytes});
+                }}
+              />
+              <input
+                type="text"
+                value={analyte.maxLevel}
+                placeholder="e.g., 1:32"
+                className="border border-green-200 rounded p-2 bg-[#e8f5e9]"
+                onChange={(e) => {
+                  const newAnalytes = [...formData.analytes];
+                  newAnalytes[index].maxLevel = e.target.value;
+                  setFormData({...formData, analytes: newAnalytes});
+                }}
+              />
+            </div>
+          ))}
+        </div>
+
+        {/* Notes */}
+        <div className="text-sm text-red-600 mb-4">
+          Note: QC Report Type – This designation identifies the type of report that will be generated in "Review Controls" of the Student View. Will the report have a Levey-Jennings chart (quantitative) or have an outcomes table (qualitative).
+        </div>
+
+        <div className="text-sm mb-8">
+          Note: QC Panel - Faculty provides data from QC reagent package insert in each green square.
+          <br />• For <span className="font-bold">Qualitative results</span>, options that faculty can enter are: <span className="font-bold">Negative</span> or <span className="font-bold">Positive</span>. Numerical values will not be used.
+          <br />• <span className="font-bold">Minimum & Maximum QC Titer Range</span>, titers will be specified by reagent packet and enter by faculty. Examples of possible titers: 1:2, 1:4, 1:8, 1:16, 1:32
+        </div>
+
+        {/* Save Button */}
+        <div className="flex justify-end">
+          <button
+            onClick={handleSave}
+            className="bg-green-100 border border-green-300 rounded px-6 py-2 hover:bg-green-200"
+          >
+            Save QC File
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default CRPTiter; 
