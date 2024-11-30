@@ -38,6 +38,142 @@ export const qcTypeLinkList = [
   {name: "Cancer Level I", link: "cancer_1", },
   {name: "Cancer Level II", link: "cancer_2", },
 ];
+/*
+//Serology categories
+export const SerologyCategoryLinkList = [
+{name:"Autoimmune", link: 'autoimmune'},
+{name:"CRP", link: "crp"},
+{name: "CH50", link: "ch50"},
+{name: "hCG", link: "hcg"},
+{name: "Hepatitis", link: "hepatitis"},
+{name: "HIV", link: "hiv"},
+{name: "Ig Tests", link: "ig_tests"},
+{name: "Mono", link: "mono"},
+{name: "RPR", link: "rpr"}
+];
+*/
+
+//Serology Panels
+export const SerologyTypeLinkList = [
+  {name:"ANA Test", link: "ana_test"},
+  {name:"Autoantibody Panel: Negative", link:"autoantibody_negative"},
+  { name: "Autoantibody Panel: Positive", link: "autoantibody_positive" },
+  { name: "RF", link: "rf" },
+  { name: "CRP Panel", link: "crp_panel" },
+  { name: "CRP Titer", link: "crp_titer" },
+  { name: "Serum hCG Negative", link: "serum_hcg_negative" },
+  { name: "Serum hCG Positive", link: "serum_hcg_positive" },
+  { name: "Urine hCG Positive", link: "urine_hcg_positive" },
+  { name: "Urine hCG Negative", link: "urine_hcg_negative" },
+  {
+    name: "Hepatitis A Virus Negative",
+    link: "hepatitis_a_virus_negative"
+  },
+  {
+    name: "Hepatitis A Virus Positive",
+    link: "hepatitis_a_virus_positive"
+  },
+  {
+    name: "Hepatitis B Surface Antigen Negative",
+    link: "hepatitis_b_surface_antigen_negative"
+  },
+  {
+    name: "Hepatitis B Surface Antigen Positive",
+    link: "hepatitis_b_surface_antigen_positive"
+  },
+  {
+    name: "Hepatitis B IgM Positive",
+    link: "hepatitis_b_igm_positive"
+  },
+  {
+    name: "Hepatitis B IgM Negative",
+    link: "hepatitis_b_igm_negative"
+  },
+  {
+    name: "Hepatitis B IgB Positive",
+    link: "hepatitis_b_igb_positive"
+  },
+  {
+    name: "Hepatitis B IgB Negative",
+    link: "hepatitis_b_igb_negative"
+  },
+  {
+    name: "Hepatitis B Core Antibody Negative",
+    link: "hepatitis_b_core_antibody_negative"
+  },
+  {
+    name: "Hepatitis B Core Antibody Positive",
+    link: "hepatitis_b_core_antibody_positive"
+  },
+  {
+    name: "Hepatitis B Surface Antibody Negative",
+    link: "hepatitis_b_surface_antibody_negative"
+  },
+  {
+    name: "Hepatitis B Surface Antibody Positive",
+    link: "hepatitis_b_surface_antibody_positive"
+  },
+  {
+    name: "Hepatitis C Virus Negative",
+    link: "hepatitis_c_virus_negative"
+  },
+  {
+    name: "Hepatitis C Virus Positive",
+    link: "hepatitis_c_virus_positive"
+  },
+  {
+    name: "Hepatitis D Virus Negative",
+    link: "hepatitis_d_virus_negative"
+  },
+  {
+    name: "Hepatitis D Virus Positive",
+    link: "hepatitis_d_virus_positive"
+  },
+  {
+    name: "HIV Non-Reactive",
+    link: "hiv_non_reactive"
+  },
+  {
+    name: "HIV 1 Reactive",
+    link: "hiv_1_reactive"
+  },
+  {
+    name: "HIV 2 Reactive",
+    link: "hiv_2_reactive"
+  },
+  {
+    name: "Light Chain",
+    link: "light_chain"
+  },
+  {
+    name: "Ig Panel",
+    link: "ig_panel"
+  },  
+{
+  name: "Mono Positive",
+  link: "mono_positive"
+},
+{
+  name: "Mono Negative",
+  link: "mono_negative"
+},
+{
+  name: "RPR Panel",
+  link: "rpr_panel"
+},
+{
+  name: "RPR Titer",
+  link: "rpr_titer"
+},
+{
+  name: "RPR Needle Calibration",
+  link: "rpr_needle_calibration"
+},
+{
+  name: "RPR Rotator",
+  link: "rpr_rotator"
+}
+];
 
 export const panelTypeLinkList = [
   {name: "Complete Metabolic Panel", link: "cmp"},
@@ -179,6 +315,9 @@ export const VitaminsLevelList = [
   { name: "Homocysteine", acronymName: "HCY" },
   { name: "Folate", acronymName: "FOL" },
 ];
+
+//Serology Analyte lists
+
 
 export const isTokenExpired = (token: string) => {
   if (!token) return true;

@@ -13,6 +13,7 @@ namespace Medical_Information.API.Models.Domain
         public DateTime? FileDate { get; set; } = DateTime.Now;
         public bool IsActive { get; set; }
         public Department Department { get; set; }
+        public bool Qualitative { get; set; } = true;
         public ICollection<Analyte> Analytes { get; set; } = [];
         public ICollection<StudentReport> Reports { get; set; } = [];
         public ICollection<AdminAnalyteReport> AdminReports { get; set; } = [];

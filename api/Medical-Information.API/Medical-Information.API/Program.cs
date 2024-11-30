@@ -126,11 +126,11 @@ app.UseCors("All Origins");
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseStaticFiles(new StaticFileOptions
+/*app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Images")),
     RequestPath = "/Images"
-});
+});*/
 
 app.MapControllers();
 

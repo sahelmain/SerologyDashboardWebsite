@@ -108,6 +108,7 @@ namespace Medical_Information.API.Controllers
                 IsActive = true,
                 FileDate = dto.FileDate,
                 Department = dto.Department,
+                Qualitative = dto.Qualitative,
                 Analytes = new List<Analyte>(),
                 Reports = new List<StudentReport>()
             };

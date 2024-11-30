@@ -13,6 +13,7 @@ namespace Medical_Information.API.Models.DTO
         public DateTime ExpirationDate { get; set; }
         public bool IsActive { get; set; }
         public Department Department { get; set; }
+        public bool Qualitative { get; set; } = true;
         public ICollection<AnalyteDTO> Analytes { get; set; } = [];
         public ICollection<StudentReportDTO> Reports { get; set; } = [];
     }

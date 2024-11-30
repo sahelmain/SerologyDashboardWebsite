@@ -17,6 +17,7 @@ namespace Medical_Information.API.Models.DTO
         public DateTime FileDate { get; set; }
         public bool IsActive { get; set; } = true;
         public Department Department { get; set; }
+        public bool Qualitative { get; set; } = true;
         public ICollection<AddAnalyteWithListDTO> Analytes { get; set; } = [];
     }
 }

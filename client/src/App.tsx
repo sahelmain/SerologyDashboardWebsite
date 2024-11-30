@@ -33,6 +33,12 @@ import ChemistryPanel from "./pages/General/Chemistry/ChemistryPanel";
 import FacultyOrderEntry from "./pages/FacultyView/FacultyOrderEntry";
 import ChemistryOEBuilder from "./pages/General/Chemistry/ChemistryOEBuilder";
 
+//serology pages
+import SerologyQCBuilder from "./pages/General/Serology/SerologyQCBuilder";
+import SerologyEditQCPage from "./pages/General/Serology/SerologyEditQCPage";
+import SerologyOrderControls from "./pages/General/Serology/SerologyOrderControls";
+import { SerologyTestInputPage } from "./pages/General/Serology/SerologyTestInputPage";
+
 function App() {
   initIDB();
   return (
@@ -195,6 +201,43 @@ function AppWithRouter() {
           {
             path: 'serology',
             children: [
+              {
+                path: 'qc_builder',
+                element: <SerologyQCBuilder />,
+              },
+              {
+                path: 'edit_qc',
+                element: <SerologyEditQCPage />,
+              },
+              {
+                path: 'order_controls',
+                element: <SerologyOrderControls />,
+              },
+              {
+                path: "edit_qc/:item",
+                element: <SerologyTestInputPage />,
+                loader: async ({ params, request }) => {
+                  const { item } = params;
+                  const searchParams = new URL(request.url).searchParams;
+                  const qcName = searchParams.get("name");
+                  const dep = searchParams.get("dep");
+                  // const qcName = qcTypeLinkList.find(qcType => qcType.link.includes(item ?? "undefined"))?.name;
+
+                  if (qcName) {
+                    try {
+                      const res = await fetch(`${process.env.REACT_APP_API_URL}/AdminQCLots/ByName?dep=${dep}&name=${qcName}`);
+
+                      if (res.ok) {
+                        return res.json();
+                      }
+                    } catch (e) {
+                      console.error("Error fetching QC data", e);
+                    }
+                  }
+
+                  return null; 
+                }
+              }
 
             ]
           },
