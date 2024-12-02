@@ -35,6 +35,7 @@ export interface AdminQCLot {
     closedDate: string;
     expirationDate: string;
     fileDate: string;
+    Qualitative: boolean;
     analytes: {
         analyteName: string;
         analyteAcronym: string;
@@ -43,6 +44,6 @@ export interface AdminQCLot {
         maxLevel: string;
         mean: string;
         stdDevi: string;
-        value?: string; // Optional value field, since it might not exist initially
+        expectedRange?: string; // Optional value field for qualitative
     }[];
 }

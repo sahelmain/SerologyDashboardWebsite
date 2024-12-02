@@ -15,20 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from "../../../components/ui/table";
-import {
-  CMP,
-  Cardiac,
-  Thyroid,
-  Liver,
-  Lipid,
-  Iron,
-  Drug,
-  Hormone,
-  Cancer,
-  Pancreatic,
-  Vitamins,
-  Diabetes,
-} from "../../../utils/MOCK_DATA";
+import {Autoimmune, CRP, CH50, hCG, Hepatitis, HIV, IgTests, Mono, RPR } from "../../../utils/SerologyMockData";
 import { DefinedRequestError, Department, ErrorCode, qcTypeLinkList, renderSubString } from "../../../utils/utils";
 import { Backdrop, Button, ButtonBase } from "@mui/material";
 import { AdminQCLot } from "../../../utils/indexedDB/IDBSchema";
@@ -47,6 +34,8 @@ interface QCRangeElements {
   maxLevel: string;
   mean: string;
   stdDevi: string;
+  type: 'qualitative' | 'quantitative' | 'qualitative_titer';
+  expectedRange: string;
 }
 
 // Manage what type of notifications are displayed
@@ -71,38 +60,32 @@ export const SerologyTestInputPage = () => {
   const [isUpdatingQCLotSuccessful, setIsUpdatingQCLotSuccessful] = useState<boolean>(false);
   const [isFeedbackNotiOpen, setFeedbackNotiOpen] = useState<boolean>(false);
   
-  // 
   const navigate = useNavigate();
   const { theme } = useTheme();
   const { item } = useParams() as { item: string };
   const loaderData = useLoaderData() as AdminQCLot;
   const { checkSession, checkUserType } = useAuth();
 
-  // Placeholder data if the database is empty
-  const mockData = item?.includes("cardiac")
-    ? Cardiac
-    : item?.includes("lipid")
-    ? Lipid
-    : item?.includes("thyroid")
-    ? Thyroid
-    : item?.includes("liver")
-    ? Liver
-    : item?.includes("iron")
-    ? Iron
-    : item?.includes("drug")
-    ? Drug
-    : item?.includes("hormone")
-    ? Hormone
-    : item?.includes("cancer")
-    ? Cancer
-    : item?.includes("pancreatic")
-    ? Pancreatic
-    : item?.includes("vitamins")
-    ? Vitamins
-    : item?.includes("diabetes")
-    ? Diabetes
-    : CMP;
-
+    const mockData = item?.includes("autoimmune")
+    ? Autoimmune
+    : item?.includes("crp")
+    ? CRP
+    : item?.includes("ch50")
+    ? CH50
+    : item?.includes("hcg")
+    ? hCG
+    : item?.includes("hepatitis")
+    ? Hepatitis
+    : item?.includes("hiv")
+    ? HIV
+    : item?.includes("igtests")
+    ? IgTests
+    : item?.includes("mono")
+    ? Mono
+    : item?.includes("rpr")
+    ? RPR
+    : Autoimmune;
+    
   // Set the initial value for QCPanel table, taken from the database. If none exist, use the mock data.
   const [QCElements, setQCElements] = useState<QCRangeElements[]>(loaderData ? loaderData.analytes : mockData);
 
@@ -150,7 +133,7 @@ export const SerologyTestInputPage = () => {
       fileDate: data.fileDate || "",
       closedDate: data.closedDate || "",
       expirationDate: data.expirationDate || "",
-      Qualitative: false, //hardcode for now - JB
+      Qualitative: QCElements[0].type === "qualitative", 
       analytes: QCElements.map(
         ({
           analyteName,
@@ -160,6 +143,8 @@ export const SerologyTestInputPage = () => {
           stdDevi,
           minLevel,
           maxLevel,
+          type,
+          expectedRange,
         }) => ({
           analyteName,
           analyteAcronym,
@@ -500,10 +485,7 @@ export const SerologyTestInputPage = () => {
   return (
     <>
       <NavBar
-        name={`${
-          qcTypeLinkList.find((qcType) => qcType.link.includes(item))?.name ??
-          "Serology"
-        } QC Builder`}
+        name={ 'Serology QC Builder' }
       />
       <div className="basic-container relative sm:space-y-4 pb-24">
         <div className="input-container flex justify-center">

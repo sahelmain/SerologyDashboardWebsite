@@ -14,6 +14,7 @@ export const CMP = [
     sdminus2: 44,
     sdminus3: 34,
     electrolyte: true,
+    type: "quantitative"
   },
   {
     analyteName: "Potassium",
@@ -30,6 +31,7 @@ export const CMP = [
     sdminus2: 52,
     sdminus3: 20,
     electrolyte: true,
+    type: "quantitative"
   },
   {
     analyteName: "Chloride",
@@ -46,6 +48,7 @@ export const CMP = [
     sdminus2: 31,
     sdminus3: 91,
     electrolyte: true,
+    type: "quantitative"
   },
   {
     analyteName: "Carbon Dioxide",
@@ -62,6 +65,7 @@ export const CMP = [
     sdminus2: 36,
     sdminus3: 32,
     electrolyte: true,
+    type: "quantitative"
   },
   {
     analyteName: "Blood Urea Nitrogen",
@@ -78,6 +82,7 @@ export const CMP = [
     sdminus2: 71,
     sdminus3: 33,
     electrolyte: false,
+    type: "quantitative"
   },
   {
     analyteName: "Creatinine",
@@ -94,6 +99,7 @@ export const CMP = [
     sdminus2: 24,
     sdminus3: 10,
     electrolyte: false,
+    type: "quantitative"
   },
   {
     analyteName: "Calcium, Total",
@@ -110,6 +116,7 @@ export const CMP = [
     sdminus2: 20,
     sdminus3: 1,
     electrolyte: false,
+    type: "quantitative"
   },
   {
     analyteName: "Glucose",
@@ -126,6 +133,7 @@ export const CMP = [
     sdminus2: 10,
     sdminus3: 18,
     electrolyte: false,
+    type: "quantitative"
   },
   {
     analyteName: "Albumin",
@@ -142,6 +150,7 @@ export const CMP = [
     sdminus2: 81,
     sdminus3: 24,
     electrolyte: false,
+    type: "quantitative"
   },
   {
     analyteName: "Alanine Aminotransferase",
@@ -158,6 +167,7 @@ export const CMP = [
     sdminus2: 74,
     sdminus3: 87,
     electrolyte: false,
+    type: "quantitative"
   },
   {
     analyteName: "Aspartate Aminotransferase",
@@ -174,6 +184,7 @@ export const CMP = [
     sdminus2: 78,
     sdminus3: 31,
     electrolyte: false,
+    type: "quantitative"
   },
   {
     analyteName: "Alkaline Phosphatse",
@@ -190,6 +201,7 @@ export const CMP = [
     sdminus2: 17,
     sdminus3: 70,
     electrolyte: false,
+    type: "quantitative"
   },
   {
     analyteName: "Bilirubin, Total",
@@ -206,6 +218,7 @@ export const CMP = [
     sdminus2: 32,
     sdminus3: 73,
     electrolyte: false,
+    type: "quantitative"
   },
   {
     analyteName: "Total Protein",
@@ -222,92 +235,99 @@ export const CMP = [
     sdminus2: 45,
     sdminus3: 68,
     electrolyte: false,
+    type: "quantitative"
   },
 ];
 
 
 export const Cardiac = [
-{
-  analyteName: "Troponin-I",
-  analyteAcronym: "cTnl",
-  unitOfMeasure: "ng/mL",
-  minLevel: "0",
-  maxLevel: "0",
-  mean: "0",
-  stdDevi: "73",
-  sdplus1: 42,
-  sdplus2: 57,
-  sdplus3: 94,
-  sdminus1: 30,
-  sdminus2: 44,
-  sdminus3: 34,
-  electrolyte: true,
-},
-{
-  analyteName: "Creatine Kinase",
-  analyteAcronym: "CK",
-  unitOfMeasure: "U/L",
-  minLevel: "0",
-  maxLevel: "0",
-  mean: "0",
-  stdDevi: "67",
-  sdplus1: 86,
-  sdplus2: 62,
-  sdplus3: 99,
-  sdminus1: 4,
-  sdminus2: 52,
-  sdminus3: 20,
-  electrolyte: true,
-},
-{
-  analyteName: "Creatine Kinase-MB",
-  analyteAcronym: "CK-MB",
-  unitOfMeasure: "%",
-  minLevel: "0",
-  maxLevel: "0",
-  mean: "0",
-  stdDevi: "16",
-  sdplus1: 100,
-  sdplus2: 21,
-  sdplus3: 42,
-  sdminus1: 81,
-  sdminus2: 31,
-  sdminus3: 91,
-  electrolyte: true,
-},
-{
-  analyteName: "Myoglobin",
-  analyteAcronym: "MYO",
-  unitOfMeasure: "ng/mL",
-  minLevel: "0",
-  maxLevel: "0",
-  mean: "0",
-  stdDevi: "87",
-  sdplus1: 32,
-  sdplus2: 68,
-  sdplus3: 28,
-  sdminus1: 53,
-  sdminus2: 36,
-  sdminus3: 32,
-  electrolyte: true,
-},
-{
-  analyteName: "High-sensitivity C-reactive Protein",
-  analyteAcronym: "hsCRP",
-  unitOfMeasure: "mg/dL",
-  minLevel: "0",
-  maxLevel: "0",
-  mean: "0",
-  stdDevi: "52",
-  sdplus1: 23,
-  sdplus2: 56,
-  sdplus3: 10,
-  sdminus1: 85,
-  sdminus2: 71,
-  sdminus3: 33,
-  electrolyte: false,
-},
+  {
+    analyteName: "Troponin-I",
+    analyteAcronym: "cTnl",
+    unitOfMeasure: "ng/mL",
+    minLevel: "0",
+    maxLevel: "0",
+    mean: "0",
+    stdDevi: "73",
+    sdplus1: 42,
+    sdplus2: 57,
+    sdplus3: 94,
+    sdminus1: 30,
+    sdminus2: 44,
+    sdminus3: 34,
+    electrolyte: true,
+    type: "quantitative"
+  },
+  {
+    analyteName: "Creatine Kinase",
+    analyteAcronym: "CK",
+    unitOfMeasure: "U/L",
+    minLevel: "0",
+    maxLevel: "0",
+    mean: "0",
+    stdDevi: "67",
+    sdplus1: 86,
+    sdplus2: 62,
+    sdplus3: 99,
+    sdminus1: 4,
+    sdminus2: 52,
+    sdminus3: 20,
+    electrolyte: true,
+    type: "quantitative"
+  },
+  {
+    analyteName: "Creatine Kinase-MB",
+    analyteAcronym: "CK-MB",
+    unitOfMeasure: "%",
+    minLevel: "0",
+    maxLevel: "0",
+    mean: "0",
+    stdDevi: "16",
+    sdplus1: 100,
+    sdplus2: 21,
+    sdplus3: 42,
+    sdminus1: 81,
+    sdminus2: 31,
+    sdminus3: 91,
+    electrolyte: true,
+    type: "quantitative"
+  },
+  {
+    analyteName: "Myoglobin",
+    analyteAcronym: "MYO",
+    unitOfMeasure: "ng/mL",
+    minLevel: "0",
+    maxLevel: "0",
+    mean: "0",
+    stdDevi: "87",
+    sdplus1: 32,
+    sdplus2: 68,
+    sdplus3: 28,
+    sdminus1: 53,
+    sdminus2: 36,
+    sdminus3: 32,
+    electrolyte: true,
+    type: "quantitative"
+  },
+  {
+    analyteName: "High-sensitivity C-reactive Protein",
+    analyteAcronym: "hsCRP",
+    unitOfMeasure: "mg/dL",
+    minLevel: "0",
+    maxLevel: "0",
+    mean: "0",
+    stdDevi: "52",
+    sdplus1: 23,
+    sdplus2: 56,
+    sdplus3: 10,
+    sdminus1: 85,
+    sdminus2: 71,
+    sdminus3: 33,
+    electrolyte: false,
+    type: "quantitative"
+  },
 ];
+
 
 export const Thyroid = [
   {
@@ -325,6 +345,7 @@ export const Thyroid = [
     sdminus2: 44,
     sdminus3: 34,
     electrolyte: true,
+    type: "quantitative"
   },
   {
     analyteName: "Triiodothyronine, Total",
@@ -341,6 +362,7 @@ export const Thyroid = [
     sdminus2: 52,
     sdminus3: 20,
     electrolyte: true,
+    type: "quantitative"
   },
   {
     analyteName: "Thyroxine,Total",
@@ -357,6 +379,7 @@ export const Thyroid = [
     sdminus2: 31,
     sdminus3: 91,
     electrolyte: true,
+    type: "quantitative"
   },
   {
     analyteName: "Triiodothyronine, Free",
@@ -373,6 +396,7 @@ export const Thyroid = [
     sdminus2: 36,
     sdminus3: 32,
     electrolyte: true,
+    type: "quantitative"
   },
   {
     analyteName: "Thyroxine, Free",
@@ -389,6 +413,7 @@ export const Thyroid = [
     sdminus2: 71,
     sdminus3: 33,
     electrolyte: false,
+    type: "quantitative"
   },
   {
     analyteName: "Anti-Thyroid Peroxidase",
@@ -405,6 +430,7 @@ export const Thyroid = [
     sdminus2: 24,
     sdminus3: 10,
     electrolyte: false,
+    type: "quantitative"
   },
   {
     analyteName: "Anti-Thyroglobulin",
@@ -421,6 +447,7 @@ export const Thyroid = [
     sdminus2: 20,
     sdminus3: 1,
     electrolyte: false,
+    type: "quantitative"
   },
 ];
   
@@ -440,6 +467,7 @@ export const Liver = [
     sdminus2: 44,
     sdminus3: 34,
     electrolyte: true,
+    type: "quantitative"
   },
   {
     analyteName: "Aspartate Aminotransferase",
@@ -456,6 +484,7 @@ export const Liver = [
     sdminus2: 52,
     sdminus3: 20,
     electrolyte: true,
+    type: "quantitative"
   },
   {
     analyteName: "Alkaline Phosphatase",
@@ -472,6 +501,7 @@ export const Liver = [
     sdminus2: 31,
     sdminus3: 91,
     electrolyte: true,
+    type: "quantitative"
   },
   {
     analyteName: "Gamma Glutamyl transferase",
@@ -488,6 +518,7 @@ export const Liver = [
     sdminus2: 36,
     sdminus3: 32,
     electrolyte: true,
+    type: "quantitative"
   },
   {
     analyteName: "Albumin",
@@ -504,6 +535,7 @@ export const Liver = [
     sdminus2: 71,
     sdminus3: 33,
     electrolyte: false,
+    type: "quantitative"
   },
   {
     analyteName: "Bilirubin, Total",
@@ -520,6 +552,7 @@ export const Liver = [
     sdminus2: 24,
     sdminus3: 10,
     electrolyte: false,
+    type: "quantitative"
   },
   {
     analyteName: "Total Protein",
@@ -536,6 +569,7 @@ export const Liver = [
     sdminus2: 20,
     sdminus3: 1,
     electrolyte: false,
+    type: "quantitative"
   },
 ];
   
@@ -555,6 +589,7 @@ export const Lipid = [
     sdminus2: 44,
     sdminus3: 34,
     electrolyte: true,
+    type: "quantitative"
   },
   {
     analyteName: "High-Density Lipoproteins",
@@ -571,6 +606,7 @@ export const Lipid = [
     sdminus2: 52,
     sdminus3: 20,
     electrolyte: true,
+    type: "quantitative"
   },
   {
     analyteName: "Low-Density Lipoproteins",
@@ -587,6 +623,7 @@ export const Lipid = [
     sdminus2: 31,
     sdminus3: 91,
     electrolyte: true,
+    type: "quantitative"
   },
   {
     analyteName: "Triglycerides, Total",
@@ -603,6 +640,7 @@ export const Lipid = [
     sdminus2: 36,
     sdminus3: 32,
     electrolyte: true,
+    type: "quantitative"
   },
 ];
 
@@ -622,6 +660,7 @@ export const Iron = [
     sdminus2: 44,
     sdminus3: 34,
     electrolyte: true,
+    type: "quantitative"
   },
   {
     analyteName: "Total Iron Binding Capacity",
@@ -638,6 +677,7 @@ export const Iron = [
     sdminus2: 52,
     sdminus3: 20,
     electrolyte: true,
+    type: "quantitative"
   },
   {
     analyteName: "Transferrin Saturation",
@@ -654,6 +694,7 @@ export const Iron = [
     sdminus2: 31,
     sdminus3: 91,
     electrolyte: true,
+    type: "quantitative"
   },
   {
     analyteName: "Ferritin",
@@ -670,6 +711,7 @@ export const Iron = [
     sdminus2: 36,
     sdminus3: 32,
     electrolyte: true,
+    type: "quantitative"
   },
 ];
 
@@ -689,6 +731,7 @@ export const Drug = [
     sdminus2: 44,
     sdminus3: 34,
     electrolyte: true,
+    type: "quantitative"
   },
   {
     analyteName: "Cannabinoids",
@@ -705,6 +748,7 @@ export const Drug = [
     sdminus2: 52,
     sdminus3: 20,
     electrolyte: true,
+    type: "quantitative"
   },
   {
     analyteName: "Cocaine",
@@ -721,6 +765,7 @@ export const Drug = [
     sdminus2: 31,
     sdminus3: 91,
     electrolyte: true,
+    type: "quantitative"
   },
   {
     analyteName: "Opiates",
@@ -737,6 +782,7 @@ export const Drug = [
     sdminus2: 36,
     sdminus3: 32,
     electrolyte: true,
+    type: "quantitative"
   },
   {
     analyteName: "Phencyclidine",
@@ -753,6 +799,7 @@ export const Drug = [
     sdminus2: 36,
     sdminus3: 32,
     electrolyte: true,
+    type: "quantitative"
   },
   {
     analyteName: "Barbiturates",
@@ -769,6 +816,7 @@ export const Drug = [
     sdminus2: 36,
     sdminus3: 32,
     electrolyte: true,
+    type: "quantitative"
   },
   {
     analyteName: "Benzodiazepines",
@@ -785,6 +833,7 @@ export const Drug = [
     sdminus2: 36,
     sdminus3: 32,
     electrolyte: true,
+    type: "quantitative"
   },
   {
     analyteName: "Methadone",
@@ -801,6 +850,7 @@ export const Drug = [
     sdminus2: 36,
     sdminus3: 32,
     electrolyte: true,
+    type: "quantitative"
   },
   {
     analyteName: "Propoxyphene",
@@ -817,6 +867,7 @@ export const Drug = [
     sdminus2: 36,
     sdminus3: 32,
     electrolyte: true,
+    type: "quantitative"
   },
   {
     analyteName: "Ethanol",
@@ -833,6 +884,7 @@ export const Drug = [
     sdminus2: 36,
     sdminus3: 32,
     electrolyte: true,
+    type: "quantitative"
   },
 ];
 
@@ -852,6 +904,7 @@ export const Hormone = [
     sdminus2: 44,
     sdminus3: 34,
     electrolyte: true,
+    type: "quantitative"
   },
   {
     analyteName: "free Testosterone",
@@ -868,6 +921,7 @@ export const Hormone = [
     sdminus2: 52,
     sdminus3: 20,
     electrolyte: true,
+    type: "quantitative"
   },
   {
     analyteName: "Prostate Specific Antigen-Total",
@@ -884,6 +938,7 @@ export const Hormone = [
     sdminus2: 31,
     sdminus3: 91,
     electrolyte: true,
+    type: "quantitative"
   },
   {
     analyteName: "Prostate Specific Antigen-Free",
@@ -900,6 +955,7 @@ export const Hormone = [
     sdminus2: 36,
     sdminus3: 32,
     electrolyte: true,
+    type: "quantitative"
   },
   {
     analyteName: "Estriadol",
@@ -916,6 +972,7 @@ export const Hormone = [
     sdminus2: 36,
     sdminus3: 32,
     electrolyte: true,
+    type: "quantitative"
   },
   {
     analyteName: "Follicle Stimulating Hormone",
@@ -932,6 +989,7 @@ export const Hormone = [
     sdminus2: 36,
     sdminus3: 32,
     electrolyte: true,
+    type: "quantitative"
   },
   {
     analyteName: "Luteinizing Hormone",
@@ -948,6 +1006,7 @@ export const Hormone = [
     sdminus2: 36,
     sdminus3: 32,
     electrolyte: true,
+    type: "quantitative"
   },
   {
     analyteName: "Progesterone",
@@ -964,6 +1023,7 @@ export const Hormone = [
     sdminus2: 36,
     sdminus3: 32,
     electrolyte: true,
+    type: "quantitative"
   },
   {
     analyteName: "Sex Hormone Binding Globulin",
@@ -973,16 +1033,6 @@ export const Hormone = [
     maxLevel: "0",
     mean: "0",
     stdDevi: "87",
-    sdplus1: 32,
-    sdplus2: 68,
-    sdplus3: 28,
-    sdminus1: 53,
-    sdminus2: 36,
-    sdminus3: 32,
-    electrolyte: true,
-  },
-  {
-    analyteName: "Human Chorionic Gonadotropin-Total",
     analyteAcronym: "hCGT",
     unitOfMeasure: "mIU/mL",
     minLevel: "0",
@@ -996,6 +1046,7 @@ export const Hormone = [
     sdminus2: 36,
     sdminus3: 32,
     electrolyte: true,
+    type: "quantitative"
   },
 ];
 
@@ -1017,6 +1068,7 @@ export const Pancreatic = [
     sdminus2: 44,
     sdminus3: 34,
     electrolyte: true,
+    type: "quantitative"
   },
   {
     analyteName: "Lipase",
@@ -1033,6 +1085,7 @@ export const Pancreatic = [
     sdminus2: 52,
     sdminus3: 20,
     electrolyte: true,
+    type: "quantitative"
   },
   {
     analyteName: "Lactate Dehydrogenase",
@@ -1048,7 +1101,8 @@ export const Pancreatic = [
     sdminus1: 81,
     sdminus2: 31,
     sdminus3: 91,
-    electrolyte: true
+    electrolyte: true,
+    type: "quantitative"
   },
 ];
 
@@ -1070,6 +1124,7 @@ export const Diabetes = [
     sdminus2: 44,
     sdminus3: 34,
     electrolyte: true,
+    type: "quantitative"
   },
   {
     analyteName: "Magnesium",
@@ -1086,6 +1141,7 @@ export const Diabetes = [
     sdminus2: 52,
     sdminus3: 20,
     electrolyte: true,
+    type: "quantitative"
   },
   {
     analyteName: "Phosphorous",
@@ -1102,6 +1158,7 @@ export const Diabetes = [
     sdminus2: 31,
     sdminus3: 91,
     electrolyte: true,
+    type: "quantitative"
   }
 ];
 
@@ -1125,6 +1182,7 @@ export const Cancer = [
     sdminus2: 44,
     sdminus3: 34,
     electrolyte: true,
+    type: "quantitative"
   },
   {
     analyteName: "Cancer Antigen 125",
@@ -1141,6 +1199,7 @@ export const Cancer = [
     sdminus2: 52,
     sdminus3: 20,
     electrolyte: true,
+    type: "quantitative"
   },
   {
     analyteName: "Carbohydrate Antigen 19-9",
@@ -1157,6 +1216,7 @@ export const Cancer = [
     sdminus2: 31,
     sdminus3: 91,
     electrolyte: true,
+    type: "quantitative"
   },
   {
     analyteName: "Cancer Antigen 15-3",
@@ -1173,6 +1233,7 @@ export const Cancer = [
     sdminus2: 36,
     sdminus3: 32,
     electrolyte: true,
+    type: "quantitative"
   },
   {
     analyteName: "Cancer Antigen 27.29",
@@ -1189,6 +1250,7 @@ export const Cancer = [
     sdminus2: 36,
     sdminus3: 32,
     electrolyte: true,
+    type: "quantitative"
   },
 ];
 
@@ -1209,6 +1271,7 @@ export const Vitamins = [
     sdminus2: 44,
     sdminus3: 34,
     electrolyte: true,
+    type: "quantitative"
   },
   {
     analyteName: "Vitamin B6",
@@ -1225,6 +1288,7 @@ export const Vitamins = [
     sdminus2: 52,
     sdminus3: 20,
     electrolyte: true,
+    type: "quantitative"
   },
   {
     analyteName: "25-Hydroxy Vitamin D",
@@ -1241,6 +1305,7 @@ export const Vitamins = [
     sdminus2: 31,
     sdminus3: 91,
     electrolyte: true,
+    type: "quantitative"
   },
   {
     analyteName: "Vitamin A",
@@ -1257,6 +1322,7 @@ export const Vitamins = [
     sdminus2: 36,
     sdminus3: 32,
     electrolyte: true,
+    type: "quantitative"
   },
   {
     analyteName: "Vitamin C",
@@ -1273,6 +1339,7 @@ export const Vitamins = [
     sdminus2: 36,
     sdminus3: 32,
     electrolyte: true,
+    type: "quantitative"
   },
   {
     analyteName: "Homocysteine",
@@ -1289,6 +1356,7 @@ export const Vitamins = [
     sdminus2: 36,
     sdminus3: 32,
     electrolyte: true,
+    type: "quantitative"
   },
   {
     analyteName: " Folate",
@@ -1305,5 +1373,6 @@ export const Vitamins = [
     sdminus2: 36,
     sdminus3: 32,
     electrolyte: true,
+    type: "quantitative"
   },
 ];

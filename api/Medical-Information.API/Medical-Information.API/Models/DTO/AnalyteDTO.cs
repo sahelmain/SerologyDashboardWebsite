@@ -12,6 +12,8 @@ namespace Medical_Information.API.Models.DTO
         public float MaxLevel { get; set; }
         public float Mean { get; set; }
         public float StdDevi { get; set; }
+        public string Type { get; set; } // type of analyte
+        public string ExpectedRange { get; set; } //for qualitative analytes
         public Guid AdminQCLotID { get; set; }
     }
 
