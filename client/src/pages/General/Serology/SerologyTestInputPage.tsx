@@ -670,7 +670,7 @@ export const SerologyTestInputPage = () => {
       expDate: expDate.toISOString(),
       fileDate: fileDate.toISOString(),
       openDate: openDate.toISOString(),
-      //closedDate: closedDate.toISOString(),
+      //closedDate: closedDate.toISOString(), //JB Undo 
       analytes: QCElements.map(
         ({
           analyteName,
@@ -709,7 +709,7 @@ export const SerologyTestInputPage = () => {
           "expirationDate": qcDataToUpdate.expDate ?? dayjs().toISOString(),
           "fileDate": qcDataToUpdate.fileDate ?? dayjs().toISOString(),
           "openDate": qcDataToUpdate.openDate ?? dayjs().toISOString(),
-          //"closedDate": qcDataToUpdate.closedDate ?? dayjs().toISOString(),
+          //"closedDate": qcDataToUpdate.closedDate ?? dayjs().toISOString(), //JB Undo
           "analytes": qcDataToUpdate.analytes.map(analyte => ({
             "analyteName": analyte.analyteName,
             "analyteAcronym": analyte.analyteAcronym,
@@ -922,9 +922,9 @@ export const SerologyTestInputPage = () => {
                 }}
               />
             </div>
-            <div className="filedate-input flex flex-col items-center py-2 bg-[#3A6CC6] rounded-xl sm:space-y-2 sm:px-2">
-              <div className="filedate-label sm:text-xl font-semibold text-white">
-                File Date
+            <div className="opendate-input flex flex-col items-center py-2 bg-[#3A6CC6] rounded-xl sm:space-y-2 sm:px-2">
+              <div className="opendate-label sm:text-xl font-semibold text-white">
+                Open Date
               </div>
               <DatePicker
                 showTime
@@ -935,11 +935,11 @@ export const SerologyTestInputPage = () => {
                   height: "34px",
                 }}
                 // defaultValue={loaderData ? dayjs(loaderData.fileDate) : dayjs()}
-                value={fileDate}
+                value={openDate}
                 format="MM/DD/YYYY"
                 onChange={(value) => {
-                  setValue("fileDate", value.toISOString());
-                  setFileDate(value);
+                  setValue("openDate", value.toISOString());
+                  setOpenDate(value);
                 }}
               />
             </div>
@@ -1131,3 +1131,6 @@ export const SerologyTestInputPage = () => {
           </div>
         </div>
       </Backdrop>
+    </>
+  );
+};
