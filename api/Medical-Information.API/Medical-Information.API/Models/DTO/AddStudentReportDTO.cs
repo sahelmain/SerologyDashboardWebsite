@@ -7,5 +7,6 @@ namespace Medical_Information.API.Models.DTO
         public Guid StudentID { get; set; }
         public Guid AdminQCLotID { get; set; }
         public DateTime? CreatedDate { get; set; }
+        public String QCName { get; set; }
     }
 }

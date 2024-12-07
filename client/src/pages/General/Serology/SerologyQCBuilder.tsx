@@ -23,12 +23,12 @@ const SerologyQCBuilder = () => {
             <div className="button-text font-bold text-2xl">QC Panels</div>
           </ButtonBase>
         </Link>
-        <Link to={`/chemistry/qc_types`}>
+        <Link to={`/serology/qc_types`}>
           <ButtonBase className={`!rounded-lg sm:w-80 sm:h-36 !bg-[${theme.secondaryColor}] !border-[1px] !border-solid !border-[${theme.primaryBorderColor}] transition ease-in-out hover:!bg-[${theme.primaryHoverColor}] hover:!border-[#2F528F] hover:!border-[4px] !px-3`}>
             <div className="button-text font-bold text-2xl">Custom QC Panels</div>
           </ButtonBase>
         </Link>
-        <Link to={`/chemistry/custom_tests`}>
+        <Link to={`/serology/custom_tests`}>
           <ButtonBase className={`!rounded-lg sm:w-80 sm:h-36 !bg-[${theme.secondaryColor}] !border-[1px] !border-solid !border-[${theme.primaryBorderColor}] transition ease-in-out hover:!bg-[${theme.primaryHoverColor}] hover:!border-[#2F528F] hover:!border-[4px] !px-3`}>
             <div className="button-text font-bold text-2xl">Custom Tests</div>
           </ButtonBase>

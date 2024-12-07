@@ -55,8 +55,8 @@ export const SerologyCategoryLinkList = [
 
 //Serology Panels
 export const SerologyTypeLinkList = [
-  {name:"ANA Test", link: "ana_test"},
-  {name:"Autoantibody Panel: Negative", link:"autoantibody_negative"},
+  {name:"ANA Test", link: "ana_test", lowername: "ana test"},
+  {name:"Autoantibody Panel: Negative", link:"autoantibody_negative", lowername: "autoantibody panel: negative"},
   { name: "Autoantibody Panel: Positive", link: "autoantibody_positive" },
   { name: "RF", link: "rf" },
   { name: "CRP Panel", link: "crp_panel" },

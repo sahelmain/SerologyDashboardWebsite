@@ -25,6 +25,8 @@ export interface ChemistryQCTemplate {
     maxLevel: number;
     mean: number;
     stdDevi: number;
+    type: string //denotes analyte type
+    expectedRange?: string; // Optional value field for qualitative
 }
 
 export interface AdminQCLot {
@@ -44,6 +46,7 @@ export interface AdminQCLot {
         maxLevel: string;
         mean: string;
         stdDevi: string;
+        type: string //denotes analyte type
         expectedRange?: string; // Optional value field for qualitative
     }[];
 }

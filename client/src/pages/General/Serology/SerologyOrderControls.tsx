@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import NavBar from "../../../components/NavBar";
-import { qcTypeLinkList } from "../../../utils/utils"; 
+import { SerologyTypeLinkList } from "../../../utils/utils"; 
 import {
   DragDropContext,
   Draggable,
@@ -25,7 +25,7 @@ const SerologyOrderControls = () => {
   const { theme } = useTheme();
   const [SelectedQCItems, setSelectedQCItems] = useState<string[]>([]);
   const [OrderControlsItems, setOrderControlsItems] = useState<string[]>(
-    qcTypeLinkList.map(qc => qc.name) // I change this to qctypelinklist from utils from manually defining each draggable
+    SerologyTypeLinkList.map(qc => qc.name) // Values from Serology list
   );
   const [NotFoundQCItems, setNotFoundQCItems] = useState<string[]>([]);
 
@@ -97,6 +97,7 @@ const SerologyOrderControls = () => {
           studentID: userId,
           adminQCLotID: item.adminQCLotID,
           createdDate: dayjs().toISOString(),
+          qcName: item.qcName,
         }));
 
         const createRes = await fetch(`${process.env.REACT_APP_API_URL}/StudentReport/Create`, {
@@ -125,7 +126,7 @@ const SerologyOrderControls = () => {
   const handleClearSelection = () => {
     setSelectedQCItems([]);
     setNotFoundQCItems([]);
-    setOrderControlsItems(qcTypeLinkList.map(qc => qc.name));
+    setOrderControlsItems(SerologyTypeLinkList.map(qc => qc.name));
     // localStorage.removeItem('selectedQCItems');  // Clear local storage
   };
 

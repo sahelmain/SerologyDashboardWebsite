@@ -1,20 +1,8 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useLoaderData, useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
-import {
-  ColumnDef,
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "../../../components/ui/table";
+import { ColumnDef, flexRender, getCoreRowModel, useReactTable, } from "@tanstack/react-table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "../../../components/ui/table";
 import {Autoimmune, CRP, CH50, hCG, Hepatitis, HIV, IgTests, Mono, RPR } from "../../../utils/SerologyMockData";
 import { DefinedRequestError, Department, ErrorCode, qcTypeLinkList, renderSubString } from "../../../utils/utils";
 import { Backdrop, Button, ButtonBase } from "@mui/material";
@@ -85,9 +73,467 @@ export const SerologyTestInputPage = () => {
     : item?.includes("rpr")
     ? RPR
     : Autoimmune;
-    
+
+    const loaderDataWithTypes = loaderData ? loaderData.analytes.map(analyte => ({
+      ...analyte,
+      type: analyte.type as "quantitative" | "qualitative" | "qualitative_titer" // Ensure type is correctly cast
+    })) : mockData;
+
+    //const QCElements = useMemo(() => loaderDataWithTypes ? loaderDataWithTypes : mockData, [loaderDataWithTypes, mockData]);
+
+  // Define columns for each type
+  const qualitativeColumns: ColumnDef<QCRangeElements, string>[] = [
+    {
+      accessorKey: "analyteName",
+      header: "Name",
+      cell: (info) => <div>{info.getValue()}</div>,
+    },
+    {
+      accessorKey: "analyteAcronym",
+      header: "Abbreviation",
+      cell: (info) => (
+        <div
+          dangerouslySetInnerHTML={{ __html: renderSubString(info.getValue()) }}
+        />
+      ),
+    },
+    {
+      accessorKey: "expectedRange",
+      header: "Expected Range",
+      cell: (info) => (
+        <select
+          value={info.getValue() || ""}
+          onChange={(e) => {
+            const newValue = e.target.value;
+            setQCElements((prevState) => {
+              const newState = prevState.map((item) => {
+                if (item.analyteName === info.row.original.analyteName) {
+                  return { ...item, expectedRange: newValue };
+                } else return item;
+              });
+              return newState;
+            });
+          }}
+        >
+          <option value="Positive">Positive</option>
+          <option value="Negative">Negative</option>
+        </select>
+      ),
+    },
+  ];
+
+  const quantitativeColumns: ColumnDef<QCRangeElements, string>[] = [
+    {
+      accessorKey: "analyteName",
+      header: "Name",
+      cell: (info) => <div>{info.getValue()}</div>,
+    },
+    {
+      accessorKey: "analyteAcronym",
+      header: "Abbreviation",
+      cell: (info) => (
+        <div
+          dangerouslySetInnerHTML={{ __html: renderSubString(info.getValue()) }}
+        />
+      ),
+    },
+    {
+      accessorKey: "unitOfMeasure",
+      header: "Units of Measure",
+      cell: (info) => (
+        <input
+          type="text"
+          className="sm:w-24 p-1 border border-solid border-[#548235] rounded-lg text-center"
+          value={info.row.original.unitOfMeasure || ""}
+          onChange={(e) => {
+            e.preventDefault();
+            setQCElements((prevState) => {
+              const newState = prevState.map((item) => {
+                if (
+                  item.analyteName === info.row.original.analyteName &&
+                  /^[a-zA-Z\u0370-\u03FF\/% ]+$/.test(e.target.value)
+                ) {
+                  return {
+                    ...item,
+                    unitOfMeasure: e.target.value,
+                  };
+                } else return item;
+              });
+              return newState;
+            });
+          }}
+        />
+      ),
+    },
+    {
+      accessorKey: "minLevel",
+      header: "Min Level",
+      cell: (info) => (
+        <input
+          type="text"
+          ref={(el) => {
+            if (
+              el &&
+              inputRefs.current.length < QCElements.length * 4
+            ) {
+              inputRefs.current[info.row.index * 4 + 1] = el;
+            }
+          }}
+          className="sm:w-16 p-1 border border-solid border-[#548235] rounded-lg text-center"
+          value={info.row.original.minLevel || ""}
+          onChange={(e) => {
+            e.preventDefault();
+            setQCElements((prevState) => {
+              const newState = prevState.map((item) => {
+                if (
+                  item.analyteName === info.row.original.analyteName &&
+                  /^\d*\.?\d*$/.test(e.target.value)
+                ) {
+                  return { ...item, minLevel: e.target.value };
+                } else return item;
+              });
+              return newState;
+            });
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              console.log(e.currentTarget.value);
+              setQCElements((prevState) => {
+                const newState = prevState.map((item) => {
+                  if (item.analyteName === info.row.original.analyteName) {
+                    const new_level = (+item.minLevel)
+                      .toFixed(2)
+                      .replace(/^0+(?!\.|$)/, "");
+                    return { ...item, minLevel: new_level };
+                  } else return item;
+                });
+                return newState;
+              });
+            }
+          }}
+        />
+      ),
+    },
+    {
+      accessorKey: "maxLevel",
+      header: "Max Level",
+      cell: (info) => (
+        <input
+          type="text"
+          ref={(el) => {
+            if (
+              el &&
+              inputRefs.current.length < QCElements.length * 4
+            ) {
+              inputRefs.current[info.row.index * 4 + 2] = el;
+            }
+          }}
+          className="sm:w-16 p-1 border border-solid border-[#548235] rounded-lg text-center"
+          value={info.row.original.maxLevel || ""}
+          onChange={(e) => {
+            e.preventDefault();
+            setQCElements((prevState) => {
+              const newState = prevState.map((item) => {
+                if (
+                  item.analyteName === info.row.original.analyteName &&
+                  /^\d*\.?\d*$/.test(e.target.value)
+                ) {
+                  return { ...item, maxLevel: e.target.value };
+                } else return item;
+              });
+              return newState;
+            });
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              console.log(e.currentTarget.value);
+              setQCElements((prevState) => {
+                const newState = prevState.map((item) => {
+                  if (item.analyteName === info.row.original.analyteName) {
+                    const new_level = (+item.maxLevel)
+                      .toFixed(2)
+                      .replace(/^0+(?!\.|$)/, "");
+                    return { ...item, maxLevel: new_level };
+                  } else return item;
+                });
+                return newState;
+              });
+            }
+          }}
+        />
+      ),
+    },
+    {
+      accessorKey: "mean",
+      header: "QC Mean",
+      cell: (info) => (
+        <input
+          type="text"
+          ref={(el) => {
+            if (
+              el &&
+              inputRefs.current.length < QCElements.length * 4
+            ) {
+              inputRefs.current[info.row.index * 4 + 3] = el;
+            }
+          }}
+          className="sm:w-16 p-1 border border-solid border-[#548235] rounded-lg text-center"
+          value={info.row.original.mean || ""}
+          onChange={(e) => {
+            e.preventDefault();
+            setQCElements((prevState) => {
+              const newState = prevState.map((item) => {
+                if (
+                  item.analyteName === info.row.original.analyteName &&
+                  /^\d*\.?\d*$/.test(e.target.value)
+                ) {
+                  return { ...item, mean: e.target.value };
+            } else return item;
+          });
+          return newState;
+        });
+      }}
+      onKeyDown={(e) => {
+        if (e.key === "Enter") {
+          console.log(e.currentTarget.value);
+          setQCElements((prevState) => {
+            const newState = prevState.map((item) => {
+              if (item.analyteName === info.row.original.analyteName) {
+                const new_level = (+item.mean)
+                  .toFixed(2)
+                  .replace(/^0+(?!\.|$)/, "");
+                return { ...item, mean: new_level };
+              } else return item;
+            });
+            return newState;
+          });
+        }
+      }}
+    />
+    ),
+    },
+    {
+      accessorKey: "stdDevi",
+      header: "Standard Deviation",
+      cell: (info) => (
+        <TableCell className="standard-deviation sm:w-32">
+          {/* Calculate the displayed value using input values */}
+          <div>
+            {((+info.row.original.maxLevel - +info.row.original.minLevel) / 4).toFixed(2)}
+          </div>
+        </TableCell>
+      ),
+    },
+    {
+      accessorKey: "sd+1",
+      header: "+1 SD",
+      cell: (info) => (
+        <div className="sd-plus-1-column">
+          {(+info.row.original.mean + (+info.row.original.stdDevi)).toFixed(2)}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "sd-1",
+      header: "-1 SD",
+      cell: (info) => (
+        <div className="sd-minus-1-column">
+          {(+info.row.original.mean - (+info.row.original.stdDevi)).toFixed(2)}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "sd+2",
+      header: "+2 SD",
+      cell: (info) => (
+        <div className="sd-plus-2-column">
+          {(+info.row.original.mean + 2 * (+info.row.original.stdDevi)).toFixed(2)}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "sd-2",
+      header: "-2 SD",
+      cell: (info) => (
+        <div className="sd-minus-2-column">
+          {(+info.row.original.mean - 2 * (+info.row.original.stdDevi)).toFixed(2)}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "sd+3",
+      header: "+3 SD",
+      cell: (info) => (
+        <div className="sd-plus-3-column">
+          {(+info.row.original.mean + 3 * (+info.row.original.stdDevi)).toFixed(2)}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "sd-3",
+      header: "-3 SD",
+      cell: (info) => (
+        <div className="sd-minus-3-column">
+          {(+info.row.original.mean - 3 * (+info.row.original.stdDevi)).toFixed(2)}
+        </div>
+      ),
+    },
+  ];
+
+  const qualitativeTiterColumns: ColumnDef<QCRangeElements, string>[] = [
+    {
+      accessorKey: "analyteName",
+      header: "Name",
+      cell: (info) => <div>{info.getValue()}</div>,
+    },
+    {
+      accessorKey: "analyteAcronym",
+      header: "Abbreviation",
+      cell: (info) => (
+        <div
+          dangerouslySetInnerHTML={{ __html: renderSubString(info.getValue()) }}
+        />
+      ),
+    },
+    {
+      accessorKey: "expectedRange",
+      header: "Expected Range",
+      cell: (info) => (
+        <select
+          value={info.getValue() || ""}
+          onChange={(e) => {
+            const newValue = e.target.value;
+            setQCElements((prevState) => {
+              const newState = prevState.map((item) => {
+                if (item.analyteName === info.row.original.analyteName) {
+                  return { ...item, expectedRange: newValue };
+                } else return item;
+              });
+              return newState;
+            });
+          }}
+        >
+          <option value="Positive">Positive</option>
+          <option value="Negative">Negative</option>
+        </select>
+      ),
+    },
+    {
+      accessorKey: "minLevel",
+      header: "Min Level",
+      cell: (info) => (
+        <input
+          type="text"
+          ref={(el) => {
+            if (
+              el &&
+              inputRefs.current.length < QCElements.length * 4
+            ) {
+              inputRefs.current[info.row.index * 4 + 1] = el;
+            }
+          }}
+          className="sm:w-16 p-1 border border-solid border-[#548235] rounded-lg text-center"
+          value={info.row.original.minLevel || ""}
+          onChange={(e) => {
+            e.preventDefault();
+            const value = e.target.value;
+            if (/^\d+:\d+$/.test(value)) {
+              setQCElements((prevState) => {
+                const newState = prevState.map((item) => {
+                  if (item.analyteName === info.row.original.analyteName) {
+                    return { ...item, minLevel: value };
+                  } else return item;
+                });
+                return newState;
+              });
+            }
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              console.log(e.currentTarget.value);
+              setQCElements((prevState) => {
+                const newState = prevState.map((item) => {
+                  if (item.analyteName === info.row.original.analyteName) {
+                    const new_level = item.minLevel.replace(/^0+(?!:|$)/, "");
+                    return { ...item, minLevel: new_level };
+                  } else return item;
+                });
+                return newState;
+              });
+            }
+          }}
+        />
+      ),
+    },
+    {
+      accessorKey: "maxLevel",
+      header: "Max Level",
+      cell: (info) => (
+        <input
+          type="text"
+          ref={(el) => {
+            if (
+              el &&
+              inputRefs.current.length < QCElements.length * 4
+            ) {
+              inputRefs.current[info.row.index * 4 + 2] = el;
+            }
+          }}
+          className="sm:w-16 p-1 border border-solid border-[#548235] rounded-lg text-center"
+          value={info.row.original.maxLevel || ""}
+          onChange={(e) => {
+            e.preventDefault();
+            const value = e.target.value;
+            if (/^\d+:\d+$/.test(value)) {
+              setQCElements((prevState) => {
+                const newState = prevState.map((item) => {
+                  if (item.analyteName === info.row.original.analyteName) {
+                    return { ...item, maxLevel: value };
+                  } else return item;
+                });
+                return newState;
+              });
+            }
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              console.log(e.currentTarget.value);
+              setQCElements((prevState) => {
+                const newState = prevState.map((item) => {
+                  if (item.analyteName === info.row.original.analyteName) {
+                    const new_level = item.maxLevel.replace(/^0+(?!:|$)/, "");
+                    return { ...item, maxLevel: new_level };
+                  } else return item;
+                });
+                return newState;
+              });
+            }
+          }}
+        />
+      ),
+    },
+  ];
+
   // Set the initial value for QCPanel table, taken from the database. If none exist, use the mock data.
   const [QCElements, setQCElements] = useState<QCRangeElements[]>(loaderData ? loaderData.analytes : mockData);
+
+  //set panel type and use to define column set
+  const panelType= QCElements[0]?.type;
+
+  let columns: ColumnDef<QCRangeElements, string>[];
+  switch (panelType) {
+    case 'qualitative':
+      columns = qualitativeColumns;
+      break;
+    case 'quantitative':
+      columns = quantitativeColumns;
+      break;
+    case 'qualitative_titer':
+      columns = qualitativeTiterColumns;
+      break;
+    default:
+      columns = quantitativeColumns;
+  }
 
   // State to manage what clicking the Save button does
   const [saveButtonActionType, setSaveButtonActionType] = useState<SaveButtonActionType>(SaveButtonActionType.Idle);
@@ -103,11 +549,15 @@ export const SerologyTestInputPage = () => {
 
   // States for the Date inputs
   const [expDate, setExpDate] = useState<Dayjs>(loaderData ? dayjs(loaderData.expirationDate) : dayjs());
+  const [openDate, setOpenDate] = useState<Dayjs>(loaderData ? dayjs(loaderData.openDate) : dayjs());
+  const [closedDate, setClosedDate] = useState<Dayjs>(loaderData ? dayjs(loaderData.closedDate) : dayjs());
   const [fileDate, setFileDate] = useState<Dayjs>(loaderData ? dayjs(loaderData.fileDate) : dayjs());
 
   // Refs to check whether the data has changed to initiate update or creation of new QC
   const prevExpDate = useRef(expDate);
   const prevFileDate = useRef(fileDate);
+  const prevOpenDate = useRef(openDate);
+  const prevClosedDate = useRef(closedDate);
   const prevQCLotInput = useRef(QCLotInput);
   const prevQCElements = useRef(QCElements);
 
@@ -153,6 +603,8 @@ export const SerologyTestInputPage = () => {
           stdDevi,
           minLevel,
           maxLevel,
+          type,
+          expectedRange
         })
       ),
     };
@@ -173,7 +625,7 @@ export const SerologyTestInputPage = () => {
           "openDate": qcDataToSave.openDate ?? dayjs().toISOString(),
           "expirationDate": qcDataToSave.expirationDate,
           "fileDate": qcDataToSave.fileDate ?? dayjs().toISOString(),
-          "department": Department.Chemistry,
+          "department": Department.Serology,
           "analytes": qcDataToSave.analytes.map(analyte => ({
             "analyteName": analyte.analyteName,
             "analyteAcronym": analyte.analyteAcronym,
@@ -182,6 +634,8 @@ export const SerologyTestInputPage = () => {
             "maxLevel": parseFloat(parseFloat(analyte.maxLevel).toFixed(2)),
             "mean": parseFloat(parseFloat(analyte.mean).toFixed(2)),
             "stdDevi": parseFloat(((+analyte.maxLevel - +analyte.minLevel) / 4).toFixed(2)),
+            "type": analyte.type,
+            "expectedRange": analyte.expectedRange,
           })),
         }),
       })
@@ -215,6 +669,8 @@ export const SerologyTestInputPage = () => {
     const qcDataToUpdate = {
       expDate: expDate.toISOString(),
       fileDate: fileDate.toISOString(),
+      openDate: openDate.toISOString(),
+      //closedDate: closedDate.toISOString(),
       analytes: QCElements.map(
         ({
           analyteName,
@@ -224,6 +680,8 @@ export const SerologyTestInputPage = () => {
           stdDevi,
           minLevel,
           maxLevel,
+          type,
+          expectedRange,
         }) => ({
           analyteName,
           analyteAcronym,
@@ -232,12 +690,14 @@ export const SerologyTestInputPage = () => {
           stdDevi,
           minLevel,
           maxLevel,
+          type,
+          expectedRange,
         })
       ),
     }
 
     console.log("Attempt to update data: ", qcDataToUpdate);
-
+    //JB - Need to add type and expectedRange to PUT
     setIsSavingQCLot(true);
     try {
       const res = await fetch(`${process.env.REACT_APP_API_URL}/AdminQCLots/UpdateQCLot/${loaderData.adminQCLotID}`, {
@@ -246,8 +706,10 @@ export const SerologyTestInputPage = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          "expirationDate": qcDataToUpdate.expDate,
+          "expirationDate": qcDataToUpdate.expDate ?? dayjs().toISOString(),
           "fileDate": qcDataToUpdate.fileDate ?? dayjs().toISOString(),
+          "openDate": qcDataToUpdate.openDate ?? dayjs().toISOString(),
+          //"closedDate": qcDataToUpdate.closedDate ?? dayjs().toISOString(),
           "analytes": qcDataToUpdate.analytes.map(analyte => ({
             "analyteName": analyte.analyteName,
             "analyteAcronym": analyte.analyteAcronym,
@@ -256,6 +718,8 @@ export const SerologyTestInputPage = () => {
             "maxLevel": parseFloat(parseFloat(analyte.maxLevel).toFixed(2)),
             "mean": parseFloat(parseFloat(analyte.mean).toFixed(2)),
             "stdDevi": parseFloat(((+analyte.maxLevel - +analyte.minLevel) / 4).toFixed(2)),
+            "type": analyte.type,
+            "expectedRange": analyte.expectedRange,
           })),
         }),
       });
@@ -400,84 +864,14 @@ export const SerologyTestInputPage = () => {
     // Update the refs with the current values
     prevExpDate.current = expDate;
     prevFileDate.current = fileDate;
+    prevOpenDate.current = openDate;
+    prevClosedDate.current = closedDate;
     prevQCLotInput.current = QCLotInput;
     prevQCElements.current = QCElements;
-  }, [expDate, fileDate, QCLotInput, QCElements])
-
-  const columns: ColumnDef<QCRangeElements, string>[] = [
-    {
-      accessorKey: "analyteName",
-      header: "Name",
-      cell: (info) => <div>{info.getValue()}</div>,
-    },
-    {
-      accessorKey: "analyteAcronym",
-      header: "Abbreviation",
-      cell: (info) => (
-        <div
-          dangerouslySetInnerHTML={{ __html: renderSubString(info.getValue()) }}
-        />
-      ),
-    },
-    {
-      accessorKey: "unitOfMeasure",
-      header: "Units of Measure",
-      cell: (info) => <></>,
-    },
-    {
-      accessorKey: "minLevel",
-      header: "Min Level",
-      cell: (info) => <></>,
-    },
-    {
-      accessorKey: "maxLevel",
-      header: "Max Level",
-      cell: (info) => <></>,
-    },
-    {
-      accessorKey: "mean",
-      header: "QC Mean",
-      cell: (info) => <></>,
-    },
-    {
-      accessorKey: "stdDevi",
-      header: "Standard Deviation",
-      cell: (info) => <></>,
-    },
-    {
-      accessorKey: "sdplus1",
-      header: "+1 SD",
-      cell: (info) => <></>,
-    },
-    {
-      accessorKey: "sdminus1",
-      header: "-1 SD",
-      cell: (info) => <></>,
-    },
-    {
-      accessorKey: "sdplus2",
-      header: "+2 SD",
-      cell: (info) => <></>,
-    },
-    {
-      accessorKey: "sdminus2",
-      header: "-2 SD",
-      cell: (info) => <></>,
-    },
-    {
-      accessorKey: "sdplus3",
-      header: "+3 SD",
-      cell: (info) => <></>,
-    },
-    {
-      accessorKey: "sdminus3",
-      header: "-3 SD",
-      cell: (info) => <></>,
-    },
-  ];
+  }, [expDate, fileDate, openDate, closedDate, QCLotInput, QCElements])
 
   const table = useReactTable({
-    data: useMemo(() => QCElements, [QCElements]),
+    data: QCElements,
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
@@ -555,333 +949,23 @@ export const SerologyTestInputPage = () => {
           <Table className="p-8 rounded-lg border-solid border-[1px] border-slate-200">
             <TableHeader>
               {table.getHeaderGroups().map((group) => (
-                <TableRow
-                  key={group.id}
-                  className="font-bold text-base bg-[#3A62A7] hover:bg-[#3A62A7] sticky top-0 z-20"
-                >
+                <TableRow key={group.id} className="font-bold text-base bg-[#3A62A7] hover:bg-[#3A62A7] sticky top-0 z-20">
                   {group.headers.map((header) => (
-                    <TableHead
-                      key={header.id}
-                      className="text-white text-center"
-                    >
-                      {flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
+                    <TableHead key={header.id} style={{ color: 'white' }}>
+                      {flexRender(header.column.columnDef.header, header.getContext())}
                     </TableHead>
                   ))}
                 </TableRow>
               ))}
             </TableHeader>
-            <TableBody
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  // Validate if all the input fall under constraints
-                  validateInputRange();
-
-                  // Move cursor to next input field
-                  moveToNextInputOnEnter(e);
-                }
-              }}
-            >
-              {/* NO DATA */}
-              {!table.getRowModel().rows?.length ? (
-                <TableRow>
-                  <TableCell
-                    colSpan={columns.length}
-                    className="sm:h-32 !p-2 text-center"
-                  >
-                    No data
-                  </TableCell>
-                </TableRow>
-              ) : (
-                <></>
-              )}
-
-              {/* DISPLAY TABLE */}
-              {QCElements.map((row, index) => (
-                <TableRow
-                  key={row.analyteName}
-                  className="text-center sm:h-[10%] border-none"
-                >
-                  {/* ANALYTE NAME COLUMN */}
-                  <TableCell>
-                    <div>{row.analyteName}</div>
-                  </TableCell>
-
-                  {/* ANALYTE ACRONYM COLUMN */}
-                  <TableCell>
-                    <div
-                      dangerouslySetInnerHTML={{
-                        __html: renderSubString(row.analyteAcronym),
-                      }}
-                    />
-                  </TableCell>
-
-                  {/* UNIT OF MEASURE COLUMN */}
-                  <TableCell className="unitOfMeasure">
-                    <input
-                      // Set the ref for the input field in ref list
-                      ref={(el) => {
-                        if (
-                          el &&
-                          inputRefs.current.length < QCElements.length * 4
-                        ) {
-                          inputRefs.current[index * 4] = el;
-                        }
-                      }}
-                      type="text"
-                      className="sm:w-24 p-1 border border-solid border-[#548235] rounded-lg text-center"
-                      value={
-                        row.unitOfMeasure === ""
-                          ? ""
-                          : row.unitOfMeasure.toString()
-                      }
-
-                      // Update value of the input field, use regex to test the conformity of the value
-                      onChange={(e) => {
-                        e.preventDefault();
-
-                        setQCElements((prevState) => {
-                          const newState = prevState.map((item) => {
-                            if (
-                              item.analyteName === row.analyteName &&
-                              /^[a-zA-Z\u0370-\u03FF\/% ]+$/.test(e.target.value)
-                            )
-                              return {
-                                ...item,
-                                unitOfMeasure: e.target.value,
-                              };
-                            else return item;
-                          });
-
-                          return newState;
-                        });
-                      }}
-                    />
-                  </TableCell>
-                  <TableCell className="minLevel">
-                    <input
-                      type="text"
-
-                      // Set the ref for the input field in ref list
-                      ref={(el) => {
-                        if (
-                          el &&
-                          inputRefs.current.length < QCElements.length * 4
-                        ) {
-                          inputRefs.current[index * 4 + 1] = el;
-                        }
-                      }}
-                      className="sm:w-16 p-1 border border-solid border-[#548235] rounded-lg text-center"
-                      value={row.minLevel || ""}
-
-                      // Update value of the input field, use regex to test the conformity of the value
-                      onChange={(e) => {
-                        e.preventDefault();
-
-                        setQCElements((prevState) => {
-                          const newState = prevState.map((item) => {
-                            if (
-                              item.analyteName === row.analyteName &&
-                              /^\d*\.?\d*$/.test(e.target.value)
-                            ) {
-                              return { ...item, minLevel: e.target.value };
-                            } else return item;
-                          });
-
-                          return newState;
-                        });
-                      }}
-
-                      // Set the value to two fixed decimal places
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                          console.log(e.currentTarget.value);
-                          setQCElements((prevState) => {
-                            const newState = prevState.map((item) => {
-                              if (item.analyteName === row.analyteName) {
-                                const new_level = (+item.minLevel)
-                                  .toFixed(2)
-                                  .replace(/^0+(?!\.|$)/, "");
-                                return { ...item, minLevel: new_level };
-                              } else return item;
-                            });
-
-                            return newState;
-                          });
-                        }
-                      }}
-                    />
-                  </TableCell>
-                  <TableCell className="maxLevel">
-                    <input
-                      type="text"
-
-                      // Set the ref for the input field in ref list
-                      ref={(el) => {
-                        if (
-                          el &&
-                          inputRefs.current.length < QCElements.length * 4
-                        ) {
-                          inputRefs.current[index * 4 + 2] = el;
-                        }
-                      }}
-                      className="sm:w-16 p-1 border border-solid border-[#548235] rounded-lg text-center"
-                      value={row.maxLevel || ""}
-
-                      // Update value of the input field, use regex to test the conformity of the value
-                      onChange={(e) => {
-                        e.preventDefault();
-
-                        setQCElements((prevState) => {
-                          const newState = prevState.map((item) => {
-                            if (
-                              item.analyteName === row.analyteName &&
-                              /^\d*\.?\d*$/.test(e.target.value)
-                            )
-                              return { ...item, maxLevel: e.target.value };
-                            else return item;
-                          });
-
-                          return newState;
-                        });
-                      }}
-
-                      // Set the value to two fixed decimal places
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                          console.log(e.currentTarget.value);
-                          setQCElements((prevState) => {
-                            const newState = prevState.map((item) => {
-                              if (item.analyteName === row.analyteName) {
-                                const new_level = (+item.maxLevel)
-                                  .toFixed(2)
-                                  .replace(/^0+(?!\.|$)/, "");
-                                return { ...item, maxLevel: new_level };
-                              } else return item;
-                            });
-
-                            return newState;
-                          });
-                        }
-                      }}
-                    />
-                  </TableCell>
-                  <TableCell className="mean">
-                    <input
-                      type="text"
-
-                      // Set the ref for the input field in ref list
-                      ref={(el) => {
-                        if (
-                          el &&
-                          inputRefs.current.length < QCElements.length * 4
-                        ) {
-                          inputRefs.current[index * 4 + 3] = el;
-                        }
-                      }}
-                      className="sm:w-16 p-1 border border-solid border-[#548235] rounded-lg text-center"
-                      value={row.mean || ""}
-
-                      // Update value of the input field, use regex to test the conformity of the value
-                      onChange={(e) => {
-                        e.preventDefault();
-
-                        setQCElements((prevState) => {
-                          const newState = prevState.map((item) => {
-                            if (
-                              item.analyteName === row.analyteName &&
-                              /^\d*\.?\d*$/.test(e.target.value)
-                            )
-                              return { ...item, mean: e.target.value };
-                            else return item;
-                          });
-
-                          return newState;
-                        });
-                      }}
-
-                      // Set the value to two fixed decimal places
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                          console.log(e.currentTarget.value);
-                          setQCElements((prevState) => {
-                            const newState = prevState.map((item) => {
-                              if (item.analyteName === row.analyteName) {
-                                const new_level = (+item.mean)
-                                  .toFixed(2)
-                                  .replace(/^0+(?!\.|$)/, "");
-                                return { ...item, mean: new_level };
-                              } else return item;
-                            });
-
-                            return newState;
-                          });
-                        }
-                      }}
-                    />
-                  </TableCell>
-                  <TableCell className="standard-deviation sm:w-32">
-                    {/* Calculate the displayed value using input values */}
-                    <div>
-                      {((+row.maxLevel - +row.minLevel) / 4).toFixed(2)}
-                    </div>
-                  </TableCell>
-                  <TableCell className="sd+1 sm:w-20">
-                    <div>
-                      {/* Calculate the displayed value using input values */}
-                      {(
-                        +row.mean +
-                        (+row.maxLevel - +row.minLevel) / 4
-                      ).toFixed(2)}
-                    </div>
-                  </TableCell>
-                  <TableCell className="sd-1 sm:w-20">
-                    <div>
-                      {/* Calculate the displayed value using input values */}
-                      {(
-                        +row.mean -
-                        (+row.maxLevel - +row.minLevel) / 4
-                      ).toFixed(2)}
-                    </div>
-                  </TableCell>
-                  <TableCell className="sd+2 sm:w-20">
-                    <div>
-                      {/* Calculate the displayed value using input values */}
-                      {(
-                        +row.mean +
-                        ((+row.maxLevel - +row.minLevel) / 4) * 2
-                      ).toFixed(2)}
-                    </div>
-                  </TableCell>
-                  <TableCell className="sd-2 sm:w-20">
-                    <div>
-                      {/* Calculate the displayed value using input values */}
-                      {(
-                        +row.mean -
-                        ((+row.maxLevel - +row.minLevel) / 4) * 2
-                      ).toFixed(2)}
-                    </div>
-                  </TableCell>
-                  <TableCell className="sd+3 sm:w-20">
-                    <div>
-                      {/* Calculate the displayed value using input values */}
-                      {(
-                        +row.mean +
-                        ((+row.maxLevel - +row.minLevel) / 4) * 3
-                      ).toFixed(2)}
-                    </div>
-                  </TableCell>
-                  <TableCell className="sd-3 sm:w-20">
-                    <div>
-                      {/* Calculate the displayed value using input values */}
-                      {(
-                        +row.mean -
-                        ((+row.maxLevel - +row.minLevel) / 4) * 3
-                      ).toFixed(2)}
-                    </div>
-                  </TableCell>
+            <TableBody>
+              {table.getRowModel().rows.map((row) => (
+                <TableRow key={row.id}>
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </TableCell>
+                  ))}
                 </TableRow>
               ))}
             </TableBody>
@@ -1047,6 +1131,3 @@ export const SerologyTestInputPage = () => {
           </div>
         </div>
       </Backdrop>
-    </>
-  );
-};

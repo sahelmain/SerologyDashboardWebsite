@@ -38,6 +38,8 @@ import SerologyQCBuilder from "./pages/General/Serology/SerologyQCBuilder";
 import SerologyEditQCPage from "./pages/General/Serology/SerologyEditQCPage";
 import SerologyOrderControls from "./pages/General/Serology/SerologyOrderControls";
 import { SerologyTestInputPage } from "./pages/General/Serology/SerologyTestInputPage";
+import SerologyQCResult from "./pages/General/Serology/SerologyQCResult";
+import SerologyAnalyteInputPage from "./pages/General/Serology/SerologyAnalyteInputPage";
 
 function App() {
   initIDB();
@@ -237,7 +239,25 @@ function AppWithRouter() {
 
                   return null; 
                 }
-              }
+              },
+              {
+                path: "qc_results",
+                element: <SerologyQCResult />,
+              },
+              {
+                path: "qc_results/:link",
+                element: <SerologyAnalyteInputPage name="" />,
+                loader: async ({ params }) => {
+                  const { link } = params;
+
+                  const res = await fetch(`${process.env.REACT_APP_API_URL}/StudentReport/${link}`);
+                  if (res.ok) {
+                    return res.json();
+                  }
+
+                  return null;
+                }
+              },
 
             ]
           },

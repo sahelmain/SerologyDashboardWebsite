@@ -56,9 +56,45 @@ export const Autoimmune = [
     }
 ];
 
-export const CRP = [];
-export const CH50 = [];
-export const hCG = [];
+export const CRP = [
+    {
+        analyteName: "C-Reactive Protein Titer",
+        analyteAcronym: "CRP-Titer",
+        type: "qualitative_titer",
+        expectedRange: "Positive",
+        unitOfMeasure: "",
+        minLevel: "1:4",
+        maxLevel: "1:16",
+        mean: "",
+        stdDevi: ""
+    }
+];
+export const CH50 = [
+    {
+        analyteName: "CH50",
+        analyteAcronym: "CH50",
+        type: "quantitative",
+        expectedRange: "Normal",
+        unitOfMeasure: "U/mL",
+        minLevel: "60",
+        maxLevel: "144",
+        mean: "102",
+        stdDevi: "24"
+    }
+];
+export const hCG = [
+    {
+        analyteName: "hCG",
+        analyteAcronym: "hCG",
+        type: "quantitative",
+        expectedRange: "Normal",
+        unitOfMeasure: "mIU/mL",
+        minLevel: "0",
+        maxLevel: "5",
+        mean: "2.5",
+        stdDevi: "1.5"
+    }
+];
 export const Hepatitis = [];
 export const HIV = [];
 export const IgTests = [];

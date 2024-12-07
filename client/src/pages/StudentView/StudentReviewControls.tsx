@@ -17,24 +17,23 @@ TableRow,
 } from "../../components/ui/table";
 import { Button } from "@mui/material";
 import { Icon } from "@iconify/react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, useLoaderData } from "react-router-dom";
 import { generateRandomId } from "../../utils/utils";
-import { qcTypeLinkList } from "../../utils/utils";
+import { SerologyTypeLinkList } from "../../utils/utils";
 
 
 
 interface QCItem {
 dep: string;
 test: string;
-id: string;
 }
 
 const columns: ColumnDef<QCItem, string>[] = [
-{
+/*{
   accessorKey: "id",
   header: "ID",
   cell: (info) => <div>{info.row.getValue("id")}</div>,
-},
+},*/
 {
   accessorKey: "dep",
   header: "Department",
@@ -54,22 +53,15 @@ const [selectedRowData, setSelectedRowData] = useState<{ [key: string]: any }>()
 const location = useLocation();
 const searchParams = new URLSearchParams(location.search);
 const [selectedQCs, setSelectedQCs] = useState<string[]>([]);
+const loaderData = useLoaderData();
 
-
-useEffect(() => {
-  const storedQCs = localStorage.getItem('selectedQCItems');
-  if (storedQCs) {
-      setSelectedQCs(JSON.parse(storedQCs));
-  }
-}, []);
-
+//JB - Need to update StudentReport data to include QC Lot Name
 const qc_items = useMemo(() => (
-  qcTypeLinkList.filter(qc => selectedQCs.includes(qc.name)).map(qc => ({
-      id: generateRandomId(),
-      dep: "Student",
-      test: qc.name
+  loaderData.map((qc: any) => ({
+    dep: "Serology",
+    test: qc.qcName,
   }))
-), [selectedQCs]);
+), [loaderData]);
 
 
 function handleRowClick(key: string) {
@@ -83,14 +75,9 @@ const table = useReactTable({
   getPaginationRowModel: getPaginationRowModel(),
 });
 
-//   console.log(table.getRowModel());
-// useEffect(() => {
-//   console.log(selectedRowData);
-// }, [selectedRowData]);
-
 return (
   <>
-    <NavBar name={`Student selected QC Review`} />
+    <NavBar name={`QC Review Controls`} />
     <div className="relative">
       <div className="table-container flex flex-col mt-8 sm:max-w-[75svw] sm:max-h-[75svh] sm:mx-auto w-100svw bg-[#CFD5EA]">
         <Table className="p-8 rounded-lg border-solid border-[1px] border-slate-200">
@@ -180,7 +167,7 @@ return (
       <Button
         className="sm:!absolute sm:w-36 sm:h-12 sm:!text-lg !bg-[#DAE3F3] right-3 -bottom-3 !border !border-solid !border-blue-500 font-medium !text-black"
         onClick={() => {
-          const qcTypeLink = qcTypeLinkList.find(item => item.name === selectedRowData?.test)?.link;
+          const qcTypeLink = SerologyTypeLinkList.find(item => item.lowername === selectedRowData?.test)?.link;
           navigate(`/student/qc_results/${qcTypeLink}`);
         }}
       >

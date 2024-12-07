@@ -14,6 +14,7 @@ namespace Medical_Information.API.Models.Domain
         public Guid AdminQCLotID { get; set; }
         //public AdminQCLot AdminQCLot { get; set; }
         public DateTime CreatedDate { get; set; } = DateTime.Now;
+        public String QCName { get; set; }
         public ICollection<AnalyteInput> AnalyteInputs { get; set; } = [];
     }
 }
