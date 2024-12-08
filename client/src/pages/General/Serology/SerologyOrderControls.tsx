@@ -277,7 +277,7 @@ const SerologyOrderControls = () => {
                 </div>
               ) }
 
-              {/* WARNING QC NOT FOUND OR EXPIRED */}
+              {/* QC Created */}
               { notiType === NotiType.OrderCreated && (
                 <div className="flex flex-col sm:gap-y-2 items-center">
                   <div className="text-2xl font-semibold">Order Successfully Created</div>

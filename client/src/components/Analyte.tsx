@@ -1,46 +1,68 @@
-import React, { forwardRef, useState, useRef, useImperativeHandle, useEffect } from "react";
-import { renderSubString } from "../utils/utils";
+import React, { useState, useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
 
-export interface AnalyteProps {
+interface AnalyteProps {
   name: string;
   acronym: string;
-  electro?: boolean;
-  // level: number;
   minLevel: number;
   maxLevel: number;
   measUnit: string;
   value: string;
+  titerMin?: string;
+  titerMax?: string;
+  type: 'quantitative' | 'qualitative' | 'qualitative_titer';
+  expectedRange?: string;
   handleInputChange: (value: string) => void;
 }
 
 const Analyte = forwardRef((props: AnalyteProps, ref) => {
-
   const [inputValue, setInputValue] = useState('');
 
   useEffect(() => {
     setInputValue(props.value);
-  }, [])
+  }, [props.value]);
 
   const inputRef = useRef<HTMLInputElement>(null);
+  const selectRef = useRef<HTMLSelectElement>(null);
   const nameRef = useRef<HTMLDivElement>(null);
 
   useImperativeHandle(ref, () => ({
     inputRef,
+    selectRef,
     nameRef,
   }));
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const value = e.target.value;
+    setInputValue(value);
+    if (props.type === 'quantitative'){
+      props.handleInputChange(value);
+    }
+    else if (props.type === 'qualitative' && selectRef.current) {
+      const className = value === props.expectedRange ? 'bg-[#00FF00]' : 'bg-[#FF0000]';
+      selectRef.current.className = `text-base sm:w-[4.5rem] sm:h-10 w-16 h-8 absolute rounded-lg text-center top-0 right-0 border border-solid border-[#7F9458] ${className}`;
+    }
+  };
   
-  // console.log(props.measUnit)
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && props.type === 'qualitative_titer') {
+      const value = e.currentTarget.value;
+      setInputValue(value);
+      props.handleInputChange(value);
+
+      const [inputMin, inputMax] = value.split(':').map(Number);
+      const [titerMin, titerMax] = [props.titerMin, props.titerMax].map(t => t ? Number(t.split(':')[1]) : NaN);
+      const className = (inputMin >= titerMin && inputMax <= titerMax) ? 'bg-[#00FF00]' : 'bg-[#FF0000]';
+      e.currentTarget.className = `text-base sm:w-[4.5rem] sm:h-10 w-16 h-8 absolute rounded-lg text-center top-0 right-0 border border-solid border-[#7F9458] ${className}`;
+    }
+  };
+
   return (
-    <>
-      <div
-        className={`
-            analyte-container sm:w-56 sm:h-fit px-4 sm:space-y-3 w-48 space-y-2
-            bg-[#B4C7E7]
-            border-2 border-solid border-[#7F9458] rounded-xl relative
-        `}
-      >
+    <div
+      className={`analyte-container sm:w-56 sm:h-fit px-4 sm:space-y-3 w-48 space-y-2 bg-[#B4C7E7] border-2 border-solid border-[#7F9458] rounded-xl relative`}
+    >
+      {props.type === 'quantitative' && (
         <input
-          type="text"
+          type="number"
           ref={inputRef}
           value={inputValue}
           className="text-base sm:w-[4.5rem] sm:h-10 w-16 h-8 absolute rounded-lg text-center top-0 right-0 border border-solid border-[#7F9458]"
@@ -49,7 +71,6 @@ const Analyte = forwardRef((props: AnalyteProps, ref) => {
               event.preventDefault();
               const newInput = (+inputValue).toFixed(2).replace(/^0+(?!\.|$)/, "");
 
-              // console.log(+event.currentTarget.value);
               if (
                 isNaN(+event.currentTarget.value) ||
                 +event.currentTarget.value < +props.minLevel ||
@@ -63,36 +84,48 @@ const Analyte = forwardRef((props: AnalyteProps, ref) => {
               }
 
               setInputValue(newInput);
-              props.handleInputChange(event.currentTarget.value);
+              //props.handleInputChange(event.currentTarget.value);
             }
           }}
-          // onChange={(event) => props.handleInputChange(event.target.value)}
-          onChange={event => {
-            event.preventDefault();
-            const newValue = event.target.value;
-
-            const isValid = /^\d*\.?\d*$/.test(newValue);
-            if (isValid) {
-              setInputValue(newValue);
-            }
-          }}
+         onChange={handleChange}
         />
-        <div
-          className="analyte-acronym text-2xl font-semibold"
-          dangerouslySetInnerHTML={{ __html: renderSubString(props.acronym) }}
-          ref={nameRef}
+      )}
+      {props.type === 'qualitative' && (
+        <select
+          ref={selectRef}
+          value={inputValue}
+          className="text-base sm:w-[4.5rem] sm:h-10 w-16 h-8 absolute rounded-lg text-center top-0 right-0 border border-solid border-[#7F9458]"
+          onChange={handleChange}
+        >
+          <option value="">Select</option>
+          <option value="Positive">Positive</option>
+          <option value="Negative">Negative</option>
+        </select>
+      )}
+      {props.type === 'qualitative_titer' && (
+        <input
+          type="text"
+          ref={inputRef}
+          value={inputValue}
+          className="text-base sm:w-[4.5rem] sm:h-10 w-16 h-8 absolute rounded-lg text-center top-0 right-0 border border-solid border-[#7F9458]"
+          pattern="^\d+:\d+$"
+          onChange={handleChange}
+          onKeyDown={handleKeyDown}
         />
-        <div className="ananlyte-desc">
-          <div className="analyte-name peer text-base truncate">{props.name}</div>
-          <div className="absolute invisible transition-all ease-in delay-100 peer-hover:visible text-white text-sm bg-slate-500 max-sm:text-center border border-solid border-gray-300 rounded-lg p-2">{props.name}</div>
-          <div className="analyte-range text-xs">
-            {/* {props.level === 1 || props.level === 2 ? `Level ${props.level === 1 ? "I" : "II"} range: ${props.minLevel} -${" "}
-            ${props.maxLevel} ${props.measUnit}` : `Range: ${props.minLevel} -${" "} ${props.maxLevel} ${props.measUnit}`} */}
-            Range: {props.minLevel} - {props.maxLevel} {props.measUnit}
-          </div>
+      )}
+      <div
+        className="analyte-acronym text-2xl font-semibold"
+        dangerouslySetInnerHTML={{ __html: props.acronym }}
+        ref={nameRef}
+      />
+      <div className="ananlyte-desc">
+        <div className="analyte-name peer text-base truncate">{props.name}</div>
+        <div className="absolute invisible transition-all ease-in delay-100 peer-hover:visible text-white text-sm bg-slate-500 max-sm:text-center border border-solid border-gray-300 rounded-lg p-2">{props.name}</div>
+        <div className="analyte-range text-xs">
+          Range: {props.minLevel} - {props.maxLevel} {props.measUnit}
         </div>
       </div>
-    </>
+    </div>
   );
 });
 

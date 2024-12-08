@@ -94,6 +94,7 @@ const SerologyAnalyteInputPage = (props: { name: string, link?: string }) => {
       if (res.ok) {
         const data = await res.json();
         setQCData(data);
+        console.log("QC data fetched successfully:", QCData);
       }
     } catch (error) {
       console.error("Error fetching QC data:", error);
@@ -194,7 +195,7 @@ const SerologyAnalyteInputPage = (props: { name: string, link?: string }) => {
       createdDate: new Date().toISOString(), // Use current date for createdDate
     }));
     
-
+    //console.log("QC Data:", QCData); // Debug log
     console.log("Data to save:", qcDataToSave); // Debug log
 
     try {
@@ -324,8 +325,12 @@ const SerologyAnalyteInputPage = (props: { name: string, link?: string }) => {
                 minLevel={+item.minLevel}
                 maxLevel={+item.maxLevel}
                 value={analyteValues[index]?.analyteValue.toString() || ""}
+                type={item.type as "quantitative" | "qualitative" | "qualitative_titer"}
+                expectedRange={item.expectedRange}
                 // level={detectLevel(props.name)}
                 measUnit={item.unitOfMeasure}
+                titerMin={item.titerMin}
+                titerMax={item.titerMax}
                 handleInputChange={(val) => {
                     if (item.minLevel !== "" && item.maxLevel !== "") {
                       // console.log("First condition");
