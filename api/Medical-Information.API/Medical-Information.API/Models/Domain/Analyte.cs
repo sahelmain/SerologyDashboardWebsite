@@ -16,6 +16,8 @@ namespace Medical_Information.API.Models.Domain
         public float StdDevi { get; set; }
         public string Type {  get; set; } 
         public string? ExpectedRange { get; set; }
+        public String? TiterMin { get; set; }
+        public String? TiterMax { get; set; }
         [ForeignKey("AdminQCLotID")]
         public Guid AdminQCLotID { get; set; }
         //public AdminQCLot AdminQCLot { get; set; }

@@ -23,7 +23,9 @@ interface QCRangeElements {
   mean: string;
   stdDevi: string;
   type: 'qualitative' | 'quantitative' | 'qualitative_titer';
-  expectedRange: string;
+  expectedRange?: string;
+  titerMin?: string;
+  titerMax?: string;
 }
 
 // Manage what type of notifications are displayed
@@ -73,11 +75,6 @@ export const SerologyTestInputPage = () => {
     : item?.includes("rpr")
     ? RPR
     : Autoimmune;
-
-    const loaderDataWithTypes = loaderData ? loaderData.analytes.map(analyte => ({
-      ...analyte,
-      type: analyte.type as "quantitative" | "qualitative" | "qualitative_titer" // Ensure type is correctly cast
-    })) : mockData;
 
     //const QCElements = useMemo(() => loaderDataWithTypes ? loaderDataWithTypes : mockData, [loaderDataWithTypes, mockData]);
 
@@ -316,12 +313,12 @@ export const SerologyTestInputPage = () => {
       accessorKey: "stdDevi",
       header: "Standard Deviation",
       cell: (info) => (
-        <TableCell className="standard-deviation sm:w-32">
+        <div className="standard-deviation sm:w-32">
           {/* Calculate the displayed value using input values */}
           <div>
             {((+info.row.original.maxLevel - +info.row.original.minLevel) / 4).toFixed(2)}
           </div>
-        </TableCell>
+        </div>
       ),
     },
     {
@@ -398,42 +395,24 @@ export const SerologyTestInputPage = () => {
     {
       accessorKey: "expectedRange",
       header: "Expected Range",
-      cell: (info) => (
-        <select
-          value={info.getValue() || ""}
-          onChange={(e) => {
-            const newValue = e.target.value;
-            setQCElements((prevState) => {
-              const newState = prevState.map((item) => {
-                if (item.analyteName === info.row.original.analyteName) {
-                  return { ...item, expectedRange: newValue };
-                } else return item;
-              });
-              return newState;
-            });
-          }}
-        >
-          <option value="Positive">Positive</option>
-          <option value="Negative">Negative</option>
-        </select>
-      ),
+      cell: (info) => <div>{info.row.getValue("expectedRange")}</div>,
     },
     {
-      accessorKey: "minLevel",
-      header: "Min Level",
+      accessorKey: "titerMin",
+      header: "Titer Min Level",
       cell: (info) => (
         <input
           type="text"
-          ref={(el) => {
+          /*ref={(el) => {
             if (
               el &&
               inputRefs.current.length < QCElements.length * 4
             ) {
               inputRefs.current[info.row.index * 4 + 1] = el;
             }
-          }}
+          }}*/
           className="sm:w-16 p-1 border border-solid border-[#548235] rounded-lg text-center"
-          value={info.row.original.minLevel || ""}
+          value={info.row.original.titerMin || ""}
           onChange={(e) => {
             e.preventDefault();
             const value = e.target.value;
@@ -441,7 +420,7 @@ export const SerologyTestInputPage = () => {
               setQCElements((prevState) => {
                 const newState = prevState.map((item) => {
                   if (item.analyteName === info.row.original.analyteName) {
-                    return { ...item, minLevel: value };
+                    return { ...item, titerMin: value };
                   } else return item;
                 });
                 return newState;
@@ -454,8 +433,8 @@ export const SerologyTestInputPage = () => {
               setQCElements((prevState) => {
                 const newState = prevState.map((item) => {
                   if (item.analyteName === info.row.original.analyteName) {
-                    const new_level = item.minLevel.replace(/^0+(?!:|$)/, "");
-                    return { ...item, minLevel: new_level };
+                    const new_level = item.titerMin.replace(/^0+(?!:|$)/, "");
+                    return { ...item, titerMin: new_level };
                   } else return item;
                 });
                 return newState;
@@ -466,21 +445,21 @@ export const SerologyTestInputPage = () => {
       ),
     },
     {
-      accessorKey: "maxLevel",
-      header: "Max Level",
+      accessorKey: "titerMax",
+      header: "Titer Max Level",
       cell: (info) => (
         <input
           type="text"
-          ref={(el) => {
+          /*ref={(el) => {
             if (
               el &&
               inputRefs.current.length < QCElements.length * 4
             ) {
               inputRefs.current[info.row.index * 4 + 2] = el;
             }
-          }}
+          }}*/
           className="sm:w-16 p-1 border border-solid border-[#548235] rounded-lg text-center"
-          value={info.row.original.maxLevel || ""}
+          value={info.row.original.titerMax || ""}
           onChange={(e) => {
             e.preventDefault();
             const value = e.target.value;
@@ -488,7 +467,7 @@ export const SerologyTestInputPage = () => {
               setQCElements((prevState) => {
                 const newState = prevState.map((item) => {
                   if (item.analyteName === info.row.original.analyteName) {
-                    return { ...item, maxLevel: value };
+                    return { ...item, titerMax: value };
                   } else return item;
                 });
                 return newState;
@@ -502,7 +481,7 @@ export const SerologyTestInputPage = () => {
                 const newState = prevState.map((item) => {
                   if (item.analyteName === info.row.original.analyteName) {
                     const new_level = item.maxLevel.replace(/^0+(?!:|$)/, "");
-                    return { ...item, maxLevel: new_level };
+                    return { ...item, titerMin: new_level };
                   } else return item;
                 });
                 return newState;
@@ -550,7 +529,8 @@ export const SerologyTestInputPage = () => {
   // States for the Date inputs
   const [expDate, setExpDate] = useState<Dayjs>(loaderData ? dayjs(loaderData.expirationDate) : dayjs());
   const [openDate, setOpenDate] = useState<Dayjs>(loaderData ? dayjs(loaderData.openDate) : dayjs());
-  const [closedDate, setClosedDate] = useState<Dayjs>(loaderData ? dayjs(loaderData.closedDate) : dayjs());
+  //const [closedDate, setClosedDate] = useState<Date | null>(null);
+  const [closedDate, setClosedDate] = useState<Dayjs | null>(loaderData && loaderData.closedDate ? dayjs(loaderData.closedDate) : null)
   const [fileDate, setFileDate] = useState<Dayjs>(loaderData ? dayjs(loaderData.fileDate) : dayjs());
 
   // Refs to check whether the data has changed to initiate update or creation of new QC
@@ -583,7 +563,7 @@ export const SerologyTestInputPage = () => {
       fileDate: data.fileDate || "",
       closedDate: data.closedDate || "",
       expirationDate: data.expirationDate || "",
-      Qualitative: QCElements[0].type === "qualitative", 
+      Qualitative: QCElements[0].type != "quantitative", 
       analytes: QCElements.map(
         ({
           analyteName,
@@ -626,6 +606,7 @@ export const SerologyTestInputPage = () => {
           "expirationDate": qcDataToSave.expirationDate,
           "fileDate": qcDataToSave.fileDate ?? dayjs().toISOString(),
           "department": Department.Serology,
+          "qualitative": qcDataToSave.Qualitative,
           "analytes": qcDataToSave.analytes.map(analyte => ({
             "analyteName": analyte.analyteName,
             "analyteAcronym": analyte.analyteAcronym,
@@ -670,7 +651,7 @@ export const SerologyTestInputPage = () => {
       expDate: expDate.toISOString(),
       fileDate: fileDate.toISOString(),
       openDate: openDate.toISOString(),
-      //closedDate: closedDate.toISOString(), //JB Undo 
+      closedDate: closedDate? closedDate.toISOString() : null, //JB Undo 
       analytes: QCElements.map(
         ({
           analyteName,
@@ -697,7 +678,6 @@ export const SerologyTestInputPage = () => {
     }
 
     console.log("Attempt to update data: ", qcDataToUpdate);
-    //JB - Need to add type and expectedRange to PUT
     setIsSavingQCLot(true);
     try {
       const res = await fetch(`${process.env.REACT_APP_API_URL}/AdminQCLots/UpdateQCLot/${loaderData.adminQCLotID}`, {
@@ -709,7 +689,7 @@ export const SerologyTestInputPage = () => {
           "expirationDate": qcDataToUpdate.expDate ?? dayjs().toISOString(),
           "fileDate": qcDataToUpdate.fileDate ?? dayjs().toISOString(),
           "openDate": qcDataToUpdate.openDate ?? dayjs().toISOString(),
-          //"closedDate": qcDataToUpdate.closedDate ?? dayjs().toISOString(), //JB Undo
+          "closedDate": qcDataToUpdate.closedDate ?? dayjs().toISOString(), //JB Undo
           "analytes": qcDataToUpdate.analytes.map(analyte => ({
             "analyteName": analyte.analyteName,
             "analyteAcronym": analyte.analyteAcronym,
@@ -843,7 +823,7 @@ export const SerologyTestInputPage = () => {
     }
     if (loaderData.lotNumber !== QCLotInput) {
       setSaveButtonActionType(SaveButtonActionType.Save);
-    } else if (loaderData.lotNumber === QCLotInput && (loaderData.expirationDate === expDate.toISOString() || loaderData.fileDate === fileDate.toISOString() || prevQCElements.current !== QCElements)) {
+    } else if (loaderData.lotNumber === QCLotInput && (loaderData.expirationDate === expDate.toISOString() || loaderData.fileDate === fileDate.toISOString()  || loaderData.openDate === openDate.toISOString() || (loaderData.closedDate ? loaderData.closedDate === closedDate?.toISOString() : closedDate === null) || prevQCElements.current !== QCElements)) {
       setSaveButtonActionType(SaveButtonActionType.Update);
     } else {
       setSaveButtonActionType(SaveButtonActionType.Idle);
@@ -943,6 +923,27 @@ export const SerologyTestInputPage = () => {
                 }}
               />
             </div>
+            <div className="closeddate-input flex flex-col items-center py-2 bg-[#3A6CC6] rounded-xl sm:space-y-2 sm:px-2">
+              <div className="closeddate-label sm:text-xl font-semibold text-white">
+                Closed Date
+              </div>
+              <DatePicker
+                showTime
+                style={{
+                  padding: "0.25rem",
+                  border: "solid 1px #548235",
+                  width: "250px",
+                  height: "34px",
+                }}
+                // defaultValue={loaderData ? dayjs(loaderData.fileDate) : dayjs()}
+                value={closedDate}
+                format="MM/DD/YYYY"
+                onChange={(value) => {
+                  //setValue("closedDate", value.toISOString());
+                  setClosedDate(value);
+                }}
+              />
+            </div>
           </div>
         </div>
         <div className="table-container flex flex-col sm:mt-8 sm:w-[94svw] sm:max-h-[75svh] sm:mx-auto w-100svw bg-[#CFD5EA] relative">
@@ -988,7 +989,8 @@ export const SerologyTestInputPage = () => {
             }
             else if (saveButtonActionType === SaveButtonActionType.Update) {
               handleUpdateQC();
-            } else {
+            } 
+            else {
               setFeedbackNotiType(NotiType.NoChangesMade);
               setFeedbackNotiOpen(true);
               return;

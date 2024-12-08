@@ -186,11 +186,33 @@ const SerologyAnalyteInputPage = (props: { name: string, link?: string }) => {
     // };
     // console.log("Data to save:", qcDataToSave); // Debug log
 
-    try {
-        // await saveToDB("qc_store", qcDataToSave);
-        // console.log("QC data saved successfully.");
+    const qcDataToSave = QCData.analytes.map((analyte, index) => ({
+      reportID: loaderData.reportID,
+      analyteName: analyte.analyteName,
+      analyteValue: analyteValues[index].analyteValue, // Ensure this is the correct format and key
+      comment: analyteValues[index].comment || "", // Add comment if available
+      createdDate: new Date().toISOString(), // Use current date for createdDate
+    }));
+    
 
-        // Optionally, you might want to reset or clear the form after saving
+    console.log("Data to save:", qcDataToSave); // Debug log
+
+    try {
+        const res = await fetch(`${process.env.REACT_APP_API_URL}/AnalyteInput/StudentCreate/${loaderData.reportID}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(qcDataToSave),
+    });
+        if(res.ok) {
+          console.log("QC data saved successfully.");
+        }
+        else {
+          console.log("Error saving QC data.");
+        }
+
+        // clear form after saving
         setAnalyteValues([]);
         setInvalidIndexes(null);
         setModalData([]);
@@ -198,6 +220,14 @@ const SerologyAnalyteInputPage = (props: { name: string, link?: string }) => {
     } catch (error) {
         console.error("Error saving QC data:", error);
     }
+  };
+
+  const handleCommentChange = (index: number, comment: string) => {
+    setAnalyteValues((prevValues) => {
+      const newValues = [...prevValues];
+      newValues[index] = { ...newValues[index], comment };
+      return newValues;
+    });
   };
   
   function handleInputChange(
@@ -244,14 +274,14 @@ const SerologyAnalyteInputPage = (props: { name: string, link?: string }) => {
     setIsInputFull(newValues.length === QCData?.analytes.length && newValues.length > 0);
   }
 
-  useEffect(() => {
+  /*useEffect(() => {
     const storedQCData = localStorage.getItem('selectedQCData');
     if (storedQCData) {
       setQCData(JSON.parse(storedQCData));
     } else {
       console.error("No QC data found.");
     }
-  }, []);
+  }, []);*/
 
   useEffect(() => {
     fetchQCData();
@@ -347,11 +377,11 @@ const SerologyAnalyteInputPage = (props: { name: string, link?: string }) => {
             </Button>
             <Button
               className={`sm:w-32 sm:h-[50px] !font-semibold !border !border-solid !border-[#6781AF] max-sm:w-full ${
-                isValid
+                isValid || isValidManual
                   ? "!bg-[#DAE3F3] !text-black"
                   : "!bg-[#AFABAB] !text-white"
               }`}
-              disabled={!isValid}
+              disabled={!isValid && !isValidManual}
               onClick= {() => handleAcceptQC()}
              >
               Accept QC
@@ -380,6 +410,9 @@ const SerologyAnalyteInputPage = (props: { name: string, link?: string }) => {
                     e.preventDefault()
                     // console.log(modalData)
                     setIsValidManual(modalData.every(item => item.comment !== ""))
+                    modalData.forEach((item, index) => {
+                      handleCommentChange(index, item.comment)
+                    });
                   })}>Apply Comments</ButtonBase>
                 </div>
               </>

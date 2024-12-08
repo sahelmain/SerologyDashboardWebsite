@@ -63,10 +63,12 @@ export const CRP = [
         type: "qualitative_titer",
         expectedRange: "Positive",
         unitOfMeasure: "",
-        minLevel: "1:4",
-        maxLevel: "1:16",
+        minLevel: "",
+        maxLevel: "",
         mean: "",
-        stdDevi: ""
+        stdDevi: "",
+        titerMin: "1:4",
+        titerMax: "1:16"
     }
 ];
 export const CH50 = [

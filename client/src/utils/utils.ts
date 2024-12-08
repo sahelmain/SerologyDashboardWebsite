@@ -60,7 +60,7 @@ export const SerologyTypeLinkList = [
   { name: "Autoantibody Panel: Positive", link: "autoantibody_positive" },
   { name: "RF", link: "rf" },
   { name: "CRP Panel", link: "crp_panel" },
-  { name: "CRP Titer", link: "crp_titer" },
+  { name: "CRP Titer", link: "crp_titer", lowername: "crp titer" },
   { name: "Serum hCG Negative", link: "serum_hcg_negative" },
   { name: "Serum hCG Positive", link: "serum_hcg_positive" },
   { name: "Urine hCG Positive", link: "urine_hcg_positive" },

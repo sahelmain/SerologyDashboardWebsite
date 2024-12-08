@@ -14,6 +14,8 @@ namespace Medical_Information.API.Models.DTO
         public float StdDevi { get; set; }
         public string Type { get; set; } // type of analyte
         public string ExpectedRange { get; set; } //for qualitative analytes
+        public string? TiterMin { get; set; }
+        public string? TiterMax { get; set;  }
         public Guid AdminQCLotID { get; set; }
     }
 
@@ -28,6 +30,8 @@ namespace Medical_Information.API.Models.DTO
         public float StdDevi { get; set; }
         public string Type { get; set; } // type of analyte
         public string ExpectedRange { get; set; }
+        public string TiterMin { get; set; }
+        public string? TiterMax { get; set; }
     }
 
     public class AddAnalyteAloneDTO
@@ -41,6 +45,8 @@ namespace Medical_Information.API.Models.DTO
         public float StdDevi { get; set; }
         public string Type { get; set; } // type of analyte
         public string ExpectedRange { get; set; }
+        public  string TiterMin { get; set; }
+        public string TiterMax { get; set; }
         public Guid AdminQCLotID { get; set; }
     }
 }
