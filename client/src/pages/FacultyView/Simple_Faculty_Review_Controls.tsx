@@ -67,21 +67,28 @@ const Simple_Faculty_QC_Review = () => {
   const [qcItems, setQcItems] = useState<QCItem[]>([]);
   const [open, setOpen] = useState(false);
 
-  // Fetch all QC items from IndexedDB
+  // Fetch all QC items from Database
   useEffect(() => {
     const fetchQCData = async () => {
       try {
-        const data = (await getAllDataFromStore('qc_store')) as unknown as AdminQCLot[];
-
-        // Map over the data and ensure type consistency
-        setQcItems(
-          data.map((item) => ({
-            fileName: String(item.qcName),  // Ensure these are strings
-            lotNumber: String(item.lotNumber),
-            closedDate: String(item.closedDate),
-            analytes: item.analytes.map(analyte => ({ analyteName: analyte.analyteName }))
-          }))
-        );
+        const res = await fetch(`${process.env.REACT_APP_API_URL}/AdminQCLots`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (res.ok){
+        const data: AdminQCLot[] = await res.json();
+        const qcItems: QCItem[] = data.map((item) => {
+          return {
+            fileName: item.qcName,
+            lotNumber: item.lotNumber,
+            closedDate: item.closedDate,
+            analytes: item.analytes
+          };
+        });
+        setQcItems(qcItems);
+      }
       } catch (error) {
         console.error("Error fetching QC data:", error);
       }
@@ -142,7 +149,7 @@ const Simple_Faculty_QC_Review = () => {
 
   return (
     <>
-      <NavBar name={`Chemistry QC Results`} />
+      <NavBar name={`Serology QC Results`} />
       <div className="relative">
         <div className="table-container flex flex-col mt-8 sm:max-w-[75svw] sm:max-h-[75svh] sm:mx-auto w-100svw bg-[#CFD5EA]">
           <Table className="p-8 rounded-lg border-solid border-[1px] border-slate-200">

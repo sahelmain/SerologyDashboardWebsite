@@ -49,9 +49,17 @@ const Analyte = forwardRef((props: AnalyteProps, ref) => {
       setInputValue(value);
       props.handleInputChange(value);
 
-      const [inputMin, inputMax] = value.split(':').map(Number);
-      const [titerMin, titerMax] = [props.titerMin, props.titerMax].map(t => t ? Number(t.split(':')[1]) : NaN);
-      const className = (inputMin >= titerMin && inputMax <= titerMax) ? 'bg-[#00FF00]' : 'bg-[#FF0000]';
+      const [inputNumerator, inputDenominator] = value.split(':').map(Number);
+      const [titerMinNumerator, titerMinDenominator] = props.titerMin?.split(':').map(Number) || [NaN, NaN];
+      const [titerMaxNumerator, titerMaxDenominator] = props.titerMax?.split(':').map(Number) || [NaN, NaN];
+
+      const inputRatio = inputNumerator / inputDenominator;
+      const titerMinRatio = titerMinNumerator / titerMinDenominator;
+      const titerMaxRatio = titerMaxNumerator / titerMaxDenominator;
+
+      console.log(inputRatio, titerMinRatio, titerMaxRatio);
+
+      const className = (inputRatio >= titerMaxRatio && inputRatio <= titerMinRatio) ? 'bg-[#00FF00]' : 'bg-[#FF0000]';
       e.currentTarget.className = `text-base sm:w-[4.5rem] sm:h-10 w-16 h-8 absolute rounded-lg text-center top-0 right-0 border border-solid border-[#7F9458] ${className}`;
     }
   };

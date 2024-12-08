@@ -235,46 +235,65 @@ const SerologyAnalyteInputPage = (props: { name: string, link?: string }) => {
     index: number,
     value: string,
     min: number,
-    max: number
+    max: number,
+    expectedRange: string,
+    type: 'quantitative' | 'qualitative' | 'qualitative_titer'
   ) {
     const newValues: AnalyteInput[] = [...analyteValues];
     newValues[index] = {
       analyteInputID: "",
       reportID: "",
       analyteName: "",
-      analyteValue: 0,
-      createdDate: "",
+      analyteValue: value,
+      createdDate: new Date().toISOString(),
       comment: "",
-    }
-    newValues[index].analyteName = "";
-    newValues[index].analyteValue = parseFloat(value);
-    newValues[index].createdDate = new Date().toISOString();
-    setAnalyteValues(newValues);
-    if (
-      isNaN(parseFloat(value)) ||
-      parseFloat(value) < min ||
-      parseFloat(value) > max ||
-      typeof value === "undefined" 
-      // newValues.length !== data.length
-    ) {
-      if (!invalidIndexes) {
-        let newInvalidIndexes = new Set<number>();
-        newInvalidIndexes.add(index);
-        setInvalidIndexes(newInvalidIndexes);
-      }
-      else {
+    };
+  
+    if (type === 'quantitative') {
+      if (
+        isNaN(parseFloat(value)) ||
+        parseFloat(value) < min ||
+        parseFloat(value) > max ||
+        typeof value === "undefined"
+      ) {
+        if (!invalidIndexes) {
+          let newInvalidIndexes = new Set<number>();
+          newInvalidIndexes.add(index);
+          setInvalidIndexes(newInvalidIndexes);
+        } else {
+          let newInvalidIndexes = new Set<number>(invalidIndexes);
+          newInvalidIndexes.add(index);
+          setInvalidIndexes(newInvalidIndexes);
+        }
+      } else {
         let newInvalidIndexes = new Set<number>(invalidIndexes);
-        newInvalidIndexes.add(index);
+        newInvalidIndexes.delete(index);
         setInvalidIndexes(newInvalidIndexes);
       }
-    } else {
-      let newInvalidIndexes = new Set<number>(invalidIndexes);
-      newInvalidIndexes.delete(index);
-      setInvalidIndexes(newInvalidIndexes);
+    } else if (type === 'qualitative') {
+      if (value === 'Select' || value === "" || value != expectedRange) {
+        if (!invalidIndexes) {
+          let newInvalidIndexes = new Set<number>();
+          newInvalidIndexes.add(index);
+          setInvalidIndexes(newInvalidIndexes);
+        } else {
+          let newInvalidIndexes = new Set<number>(invalidIndexes);
+          newInvalidIndexes.add(index);
+          setInvalidIndexes(newInvalidIndexes);
+        }
+      } else {
+        let newInvalidIndexes = new Set<number>(invalidIndexes);
+        newInvalidIndexes.delete(index);
+        setInvalidIndexes(newInvalidIndexes);
+      }
     }
-    setIsInputFull(newValues.length === QCData?.analytes.length && newValues.length > 0);
+  
+    setAnalyteValues(newValues);
+  
+    // Check if all analytes have values
+    const allAnalytesFilled = newValues.every((val) => value !== "");
+    setIsInputFull(allAnalytesFilled);
   }
-
   /*useEffect(() => {
     const storedQCData = localStorage.getItem('selectedQCData');
     if (storedQCData) {
@@ -312,12 +331,12 @@ const SerologyAnalyteInputPage = (props: { name: string, link?: string }) => {
         style={{ minWidth: "100svw", minHeight: "100svh" }}
       >
         <div className="analyte-list-container flex flex-wrap gap-14 sm:w-[90svw] sm:px-[149.5px] max-sm:flex-col mt-8 px-3 justify-center">
-          {QCData?.analytes.map((item, index) => (
+          {QCData?.analytes.map((item: any, index: number) => (
             <div
               onKeyDown={(event) => {
                 handleKeyPress(event, index);
               }}
-              key={item.analyteName}
+              key={item.analyteN3ame}
             >
               <Analyte
                 name={item.analyteName}
@@ -327,18 +346,18 @@ const SerologyAnalyteInputPage = (props: { name: string, link?: string }) => {
                 value={analyteValues[index]?.analyteValue.toString() || ""}
                 type={item.type as "quantitative" | "qualitative" | "qualitative_titer"}
                 expectedRange={item.expectedRange}
-                // level={detectLevel(props.name)}
-                measUnit={item.unitOfMeasure}
                 titerMin={item.titerMin}
                 titerMax={item.titerMax}
+                // level={detectLevel(props.name)}
+                measUnit={item.unitOfMeasure}
                 handleInputChange={(val) => {
                     if (item.minLevel !== "" && item.maxLevel !== "") {
                       // console.log("First condition");
-                      handleInputChange(index, val, +item.minLevel, +item.maxLevel)
+                      handleInputChange(index, val, +item.minLevel, +item.maxLevel, item.expectedRange, item.type)
                     }
                     else {
                       // console.log("Second condition")
-                      handleInputChange(index, val, -1, 9999)
+                      handleInputChange(index, val, -1, 9999, item.expectedRange, item.type)
                     }
                   }
                 }

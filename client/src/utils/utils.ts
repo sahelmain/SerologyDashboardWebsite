@@ -364,7 +364,7 @@ export interface AnalyteInput {
   analyteInputID: string;
   reportID: string;
   analyteName: string;
-  analyteValue: number;
+  analyteValue: string;
   createdDate: string;
   comment: string;
 }

@@ -13,6 +13,6 @@ namespace Medical_Information.API.Models.Domain
         public string AnalyteName { get; set; }
         public string? Comment { get; set; }
         public DateTime CreatedDate { get; set; }
-        public float AnalyteValue { get; set; }
+        public string AnalyteValue { get; set; }
     }
 }
