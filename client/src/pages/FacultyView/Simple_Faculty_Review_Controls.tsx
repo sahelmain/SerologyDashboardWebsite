@@ -94,12 +94,12 @@ const Simple_Faculty_QC_Review = () => {
       }
     };
 
-    fetchQCData();
+    fetchQCData()
   }, []);
 
   function handleLeveyJenningsClick() {
     if (selectedRowData && selectedAnalyte) {
-      navigate(`/chemistry/levey-jennings/${selectedRowData.fileName}/${selectedRowData.lotNumber}/${selectedAnalyte}`);
+      navigate(`/serology/levey-jennings/${selectedRowData.fileName}/${selectedRowData.lotNumber}/${selectedAnalyte}`);
     }
   }
   

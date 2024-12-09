@@ -29,6 +29,26 @@ export interface ChemistryQCTemplate {
     expectedRange?: string; // Optional value field for qualitative
 }
 
+export interface ReportData{
+    fileName: string;
+    lotNumber: string;
+    closedDate: string;
+    analytes: {
+        analyteName: string;
+        analyteAcronym: string;
+        unitOfMeasure: string;
+        minLevel: string;
+        maxLevel: string;
+        mean: string;
+        stdDevi: string;
+        type: string //denotes analyte type
+        expectedRange?: string; // Optional value field for qualitative
+        titerMin?: string;
+        titerMax?: string;
+        value?: string;
+    }[];
+}
+
 export interface AdminQCLot {
     adminQCLotID?: string;
     qcName: string;

@@ -40,6 +40,7 @@ import SerologyOrderControls from "./pages/General/Serology/SerologyOrderControl
 import { SerologyTestInputPage } from "./pages/General/Serology/SerologyTestInputPage";
 import SerologyQCResult from "./pages/General/Serology/SerologyQCResult";
 import SerologyAnalyteInputPage from "./pages/General/Serology/SerologyAnalyteInputPage";
+import SerologyLeveyJennings from "./pages/General/Serology/SerologyLeveyJennings";
 
 function App() {
   initIDB();
@@ -89,6 +90,16 @@ function AppWithRouter() {
           {
             path: 'admin-review_controls',
             element: <Simple_Faculty_QC_Review />,
+            loader: async ({ params }) => {
+              const { link } = params;
+
+              const res = await fetch(`${process.env.REACT_APP_API_URL}/StudentReport`);
+              if (res.ok) {
+                return res.json();
+              }
+
+              return null;
+            }
           },
           
           { path: 'student-results', element: <StudentResultsInProgress /> },
@@ -257,6 +268,10 @@ function AppWithRouter() {
 
                   return null;
                 }
+              },
+              {
+                path: 'levey-jennings/:fileName/:lotNumber/:analyteName',
+                element: <SerologyLeveyJennings />,
               },
 
             ]

@@ -76,6 +76,8 @@ builder.Services.AddScoped<IAnalyteRepository, SQLAnalyteRepository>();
 builder.Services.AddScoped<IImageRepository, LocalImageRepository>();
 builder.Services.AddScoped<IStudentReportRepository, SQLStudentReportRepository>();
 builder.Services.AddScoped<IAnalyteInputRepository, SQLAnalyteInputRepository>();
+builder.Services.AddScoped<IAnalyteReportRepository, SQLAnalyteReportRepository>();
+
 
 builder.Services.AddScoped<ITokenRepository, TokenRepository>();
 

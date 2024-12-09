@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
-import { getAllDataFromStore } from '../../../utils/indexedDB/getData';
-import { ReportData } from '../../../utils/indexedDB/IDBSchema';
+//import { getAllDataFromStore } from '../../../utils/indexedDB/getData';
+//import { ReportData } from '../../../utils/indexedDB/IDBSchema';
 import NavBar from '../../../components/NavBar';
 
 import { Modal, Radio, RadioGroup, FormControlLabel, TextField } from '@mui/material';
@@ -46,13 +46,83 @@ const ChemistryLeveyJennings = () => {
   const [qcComment, setQcComment] = useState<string>('');
   useEffect(() => {
     const fetchAnalyteData = async () => {
-      try {
+        try {
+            const adminQCLotResponse = await fetch(`${process.env.REACT_APP_API_URL}/AdminQCLots/ByName?name=${fileName}&dep=1`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+            }
+            });
+
+            const adminQCLotData = await adminQCLotResponse.json();
+    
+            const studentReportResponse = await fetch(`${process.env.REACT_APP_API_URL}/StudentReport`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+            /*if (studentReportResponse.ok) {
+                console.log('Student Report Data:', studentReportResponse);
+                const studentReportData = await studentReportResponse.json();
+            }*/
+            const studentReportData = await studentReportResponse.json();
+            
+            console.log('adminQCLotData:', adminQCLotData);
+            console.log('studentReportData:', studentReportData);
+
+            //Combine data
+            const combinedData = adminQCLotData.map((adminQCLot: any) => {
+                const studentReport = studentReportData.find((report: any) => report.adminQCLotID === adminQCLot.adminQCLotID);
+                return {
+                  ...adminQCLot,
+                  studentReport,
+                };
+              });
+      
+              const matchingRecords = combinedData.filter(
+                (item: any) => item.fileName === fileName && item.lotNumber === lotNumber
+              );
+            const analyteValues = matchingRecords.map((record: any) => {
+              const analyte = record.analytes.find((a: any) => a.analyteName === analyteName);
+              if (analyte) {
+                return {
+                  closedDate: record.closedDate,
+                  value: analyte.value ? parseFloat(analyte.value) : parseFloat(analyte.mean),
+                  mean: parseFloat(analyte.mean),
+                  stdDevi: parseFloat(analyte.stdDevi),
+                  analyteName: analyte.analyteName,
+                  minLevel: parseFloat(analyte.minLevel),
+                  maxLevel: parseFloat(analyte.maxLevel),
+                };
+            }
+            return null;
+          }).filter((d: any): d is AnalyteData => d !== null);
+  
+          setAnalyteData(analyteValues);
+  
+          const tableRows = analyteValues.map((analyte: AnalyteData) => ({
+            runDateTime: analyte.closedDate,
+            result: analyte.value.toFixed(2),
+            tech: '',
+            comments: '',
+          }));
+
+          setTableData(tableRows);
+      } catch (error) {
+        console.error("Error fetching analyte data:", error);
+      }
+    };
+
+    fetchAnalyteData();
+  }, [fileName, lotNumber, analyteName]);
+
+      /*try {
         const data = (await getAllDataFromStore('qc_store')) as unknown as ReportData[];
 
         const matchingRecords = data.filter(
           (item) => item.fileName === fileName && item.lotNumber === lotNumber
         );
-        console.log(data);
         const analyteValues = matchingRecords.map((record) => {
           const analyte = record.analytes.find((a) => a.analyteName === analyteName);
           if (analyte) {
@@ -70,7 +140,7 @@ const ChemistryLeveyJennings = () => {
         }).filter((d): d is AnalyteData => d !== null); 
 
         setAnalyteData(analyteValues);
-
+        console.log('matchingRecords:', matchingRecords);
         const tableRows = analyteValues.map((analyte) => ({
             runDateTime: analyte.closedDate, 
             result: analyte.value.toFixed(2), 
@@ -91,7 +161,7 @@ const ChemistryLeveyJennings = () => {
       if (analyteData.length > 0) {
         drawChart();
       }
-    }, [analyteData]);
+    }, [analyteData]);*/
 
   const drawChart = () => {
     const svg = d3.select(svgRef.current);
