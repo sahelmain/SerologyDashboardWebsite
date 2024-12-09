@@ -32,7 +32,7 @@ namespace Medical_Information.API.Repositories.SQLImplementation
                         select new AnalyteReportDTO
                         {
                             LotNumber = a.LotNumber,
-                            OpenDate = a.OpenDate,
+                            RunDateTime = ai.CreatedDate,
                             ClosedDate = a.ClosedDate,
                             AnalyteName = an.AnalyteName,
                             MinLevel = an.MinLevel,
@@ -41,6 +41,9 @@ namespace Medical_Information.API.Repositories.SQLImplementation
                             StdDevi = an.StdDevi,
                             AnalyteValue = ai.AnalyteValue,
                             Comment = ai.Comment,
+                            ExpectedRange = an.ExpectedRange,
+                            TiterMin = an.TiterMin,
+                            TiterMax = an.TiterMax,
                             Initials = st.Initials
                         };
 
@@ -58,7 +61,7 @@ namespace Medical_Information.API.Repositories.SQLImplementation
                         select new AnalyteReportDTO
                         {
                             LotNumber = a.LotNumber,
-                            OpenDate = a.OpenDate,
+                            RunDateTime = ai.CreatedDate,
                             ClosedDate = a.ClosedDate,
                             AnalyteName = an.AnalyteName,
                             MinLevel = an.MinLevel,
@@ -67,6 +70,9 @@ namespace Medical_Information.API.Repositories.SQLImplementation
                             StdDevi = an.StdDevi,
                             AnalyteValue = ai.AnalyteValue,
                             Comment = ai.Comment,
+                            ExpectedRange = an.ExpectedRange,
+                            TiterMin = an.TiterMin,
+                            TiterMax = an.TiterMax,
                             Initials = st.Initials
                         };
 
